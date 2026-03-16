@@ -7,5 +7,9 @@ export const view = {
 
   //ceBtn: document.querySelector('input[value="CE"]'),
 
+  //divoù serons affichées les résultats
   divResult: document.getElementById("bloc-resultats"),
+
+  listRegions: document.getElementsByClassName('region'),
+
 };
