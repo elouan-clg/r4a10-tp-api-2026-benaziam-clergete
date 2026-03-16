@@ -18,3 +18,30 @@ function randomCall(){
 }
 
 randomCall();
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Toggle favoris - déplier/replier
+document.addEventListener('DOMContentLoaded', function() {
+  const toggleBtn = document.getElementById('btn-toggle-favoris');
+  const favorisContent = document.getElementById('favoris-content');
+
+  if (toggleBtn && favorisContent) {
+    toggleBtn.addEventListener('click', function() {
+      const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+      
+      toggleBtn.setAttribute('aria-expanded', !isExpanded);
+      favorisContent.classList.toggle('open');
+    });
+  }
+});

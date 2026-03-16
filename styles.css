@@ -1,168 +1,358 @@
-/* Importation de la police Roboto */
+/* ============================================
+   IMPORTATIONS & VARIABLES
+   ============================================ */
+
 @import url(https://fonts.googleapis.com/css?family=Roboto);
 
-/* Définition des principales couleurs */
 :root {
-  --text-color: #fafafa; /* (Texte presque blanc) */
-  --background: #34495e; /* (Fond bleu foncé) */
-  --background-button: #bebebe;
-  --main-green: rgb(26, 188, 156);
-  --active-green: rgb(20, 156, 128);
-  --almost-black: #2d2d2d;
+  /* Couleurs primaires - Bleu sombre */
+  --background: #0d1117;
+  --text-primary: #f5f5f5;
+  --text-secondary: #b0b0b0;
+
+  /* Surfaces avec transparence */
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-hover: rgba(255, 255, 255, 0.08);
+
+  /* Accent bleu */
+  --accent-blue: #2563eb;
+  --accent-blue-hover: #1d4ed8;
+  --accent-blue-light: rgba(37, 99, 235, 0.1);
+
+  /* Ombres subtiles */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
+/* ============================================
+   RÉINITIALISATION & BASE
+   ============================================ */
+
 * {
-  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background-color: var(--background);
-  font: 14pt Roboto, Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  width: 90%;
-  margin: 40px auto;
+  color: var(--text-primary);
+  font: 14px Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.6;
 }
 
-/* Paragraphes "Aucun résultat..." et "Aucune recherche..." */
-p.info-vide {
-  font-style: italic;
+a {
+  color: var(--accent-blue);
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
-/* Partie En-tête */
-h1 {
+a:hover {
+  color: var(--accent-blue-hover);
+  text-decoration: underline;
+}
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+
+#hero {
+  background: linear-gradient(135deg, #0d1117 0%, #1a1f2e 100%);
+  padding: 80px 20px;
   text-align: center;
-  font-variant: small-caps;
-  font-size: 2.5em;
-  color: var(--main-green);
+  border-bottom: 1px solid rgba(37, 99, 235, 0.2);
 }
 
-#explication {
-  font-size: 1.2em;
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-/* Conteneur principal */
-#conteneur {
-  display: flex;
-  flex: 1;
-  margin: 30px auto;
+#hero h1 {
+  font-size: 3.5em;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #f5f5f5 0%, #2563eb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* Section Recherche (avec résultats) */
-#section-recherche {
-  margin-top: 0;
-  flex: 1 1 auto;
+#hero p {
+  font-size: 1.3em;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
 }
 
 #bloc-recherche {
   display: flex;
-  margin: 0 auto;
-  min-width: 450px;
-  flex-direction: row;
+  gap: 12px;
+  margin-top: 30px;
 }
 
 #bloc-recherche > input[type="text"],
 #bloc-recherche > button {
-  display: block;
-  font-size: 1.2em;
+  font-family: inherit;
+  font-size: 1em;
+  padding: 14px 20px;
+  border: none;
+  background-color: var(--surface);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+  cursor: default;
+  border-radius: 8px;
 }
 
 #bloc-recherche > input[type="text"] {
-  color: var(--almost-black);
   flex: 1;
-  padding: 0.7em;
-  border: 0.3em solid var(--main-green);
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+}
+
+#bloc-recherche > input[type="text"]:focus {
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px var(--accent-blue-light);
+}
+
+#bloc-recherche > input[type="text"]::placeholder {
+  color: var(--text-secondary);
 }
 
 #bloc-recherche > button {
-  padding: 0.8em 0.8em;
-  /* Bordure invisible pour que le hover ne bouge pas le bouton */
-  border: 1px solid var(--main-green);
-
-  /* Par défaut, les boutons sont en gris
-	 (S'ils sont "clicables", ils passent en vert) */
-  background-color: var(--background-button);
-}
-
-/* Apparences des boutons clicables */
-#bloc-recherche > button.btn_clicable {
-  background-color: var(--main-green);
-}
-
-#bloc-recherche > button:focus {
-  /* Pour éviter un affichage disgracieux
-		quand le bouton reste en focus */
-  outline: 0 !important;
-}
-
-#bloc-recherche > button.btn_clicable:hover {
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--accent-blue);
+  border: 1px solid var(--accent-blue);
+  color: #ffffff;
   cursor: pointer;
-  border: 1px solid white;
+  box-shadow: var(--shadow-md);
 }
 
-#bloc-recherche > button.btn_clicable:active {
-  background-color: var(--active-green);
+#bloc-recherche > button:hover {
+  background-color: var(--accent-blue-hover);
+  border-color: var(--accent-blue-hover);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
-/* GIF de chargement (caché par défaut) */
+#bloc-recherche > button:active {
+  background-color: #1a3fa0;
+  transform: translateY(0);
+}
+
+#bloc-recherche > button svg {
+  display: block;
+}
+
+/* ============================================
+   MAIN CONTENT LAYOUT
+   ============================================ */
+
+#conteneur {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 0 20px;
+}
+
+/* ============================================
+   SECTION RÉSULTATS
+   ============================================ */
+
+#section-resultats {
+  grid-column: 1;
+}
+
 #bloc-gif-attente {
   display: none;
-  margin: 40px;
   text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+}
+
+#bloc-gif-attente.visible {
+  display: block;
+}
+
+#bloc-resultats {
+  margin-top: 0;
+}
+
+#bloc-resultats p.res {
+  margin-bottom: 16px;
+  padding: 16px 20px;
+  background-color: var(--surface);
+  border-left: 3px solid var(--accent-blue);
+  border-radius: 8px;
+  line-height: 1.8;
+  transition: all 0.2s ease;
+}
+
+#bloc-resultats p.res:hover {
+  background-color: var(--surface-hover);
+  box-shadow: var(--shadow-sm);
+  transform: translateX(4px);
 }
 
 #bloc-resultats p.res::before {
-  /* Affichage d'une flèche devant chaque résultat
-		(Cf. https://unicode-table.com/fr/21E8/ ) */
-  content: "\21E8\00A0";
+  content: "→ ";
+  color: var(--accent-blue);
+  margin-right: 10px;
+  font-weight: 500;
 }
 
-/* Section de la barre de séparation */
-#section-separation {
-  border-left: 2px dashed var(--main-green);
-  margin: 0 20px;
+#bloc-resultats p.info-vide {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
-/* Section des recherches favorites */
+/* ============================================
+   SECTION FAVORIS (SIDEBAR COLLAPSIBLE)
+   ============================================ */
+
 #section-favoris {
-  flex: 0 0 300px;
-  margin-top: 0;
-  margin-bottom: 20px;
+  grid-column: 2;
+  grid-row: 1;
+  height: fit-content;
+  position: sticky;
+  top: 20px;
 }
 
-#section-favoris h2 {
-  margin-top: 0;
+.toggle-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background-color: var(--surface);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  color: var(--text-primary);
+  font-size: 1em;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 12px;
 }
 
-#section-favoris p {
-  margin-bottom: 8px;
+.toggle-btn:hover {
+  background-color: var(--surface-hover);
+  border-color: var(--accent-blue);
+}
+
+.toggle-btn:active {
+  background-color: rgba(37, 99, 235, 0.15);
+}
+
+.toggle-icon {
+  display: inline-block;
+  transition: transform 0.3s ease;
+  color: var(--accent-blue);
+  font-weight: bold;
+  font-size: 0.8em;
+}
+
+.toggle-btn[aria-expanded="true"] .toggle-icon {
+  transform: rotate(-180deg);
+}
+
+.favoris-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.favoris-content.open {
+  max-height: 1000px;
+}
+
+#liste-favoris {
+  list-style: none;
+  margin-bottom: 12px;
 }
 
 #liste-favoris li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
   margin-bottom: 8px;
-  cursor: pointer;
+  background-color: var(--surface);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+#liste-favoris li:hover {
+  background-color: var(--surface-hover);
+  box-shadow: var(--shadow-sm);
+  transform: translateX(2px);
 }
 
 #liste-favoris li span {
-  text-decoration: underline;
+  flex: 1;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  font-size: 0.95em;
 }
 
 #liste-favoris li span:hover {
-  color: var(--main-green);
+  color: var(--accent-blue);
 }
 
-/* Media-query pour gérer l'affichage sur petit écran */
-@media (max-width: 900px) {
-  #conteneur {
-    flex-direction: column-reverse;
-  }
+#liste-favoris button.btn-supprimer-favori {
+  background: none;
+  border: none;
+  padding: 6px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
 
-  #section-separation {
-    border-top: 2px dashed var(--main-green);
-    margin: 0 -10px 40px -10px;
-  }
+#liste-favoris button.btn-supprimer-favori:hover {
+  color: var(--accent-blue);
+  background-color: rgba(37, 99, 235, 0.1);
+}
 
-  #section-favoris {
-    flex: 0;
-  }
+#section-favoris p.info-vide {
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 20px 16px;
+  margin: 0;
+  font-style: italic;
+  background-color: var(--surface);
+  border-radius: 6px;
+}
+
+/* ============================================
+   ACCESSIBILITÉ & FOCUS VISIBLE
+   ============================================ */
+
+button:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+input:focus-visible {
+  outline: none;
 }
