@@ -5,24 +5,25 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto);
 
 :root {
-  /* Couleurs primaires - Bleu sombre */
-  --background: #0d1117;
-  --text-primary: #f5f5f5;
-  --text-secondary: #b0b0b0;
+  /* Couleurs primaires - CROUS Officiel */
+  --background: #ffffff;
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
 
-  /* Surfaces avec transparence */
-  --surface: rgba(255, 255, 255, 0.04);
-  --surface-hover: rgba(255, 255, 255, 0.08);
+  /* Accent rouge CROUS */
+  --accent-red: #d32f2f;
+  --accent-red-hover: #b71c1c;
+  --accent-red-light: rgba(211, 47, 47, 0.1);
 
-  /* Accent bleu */
-  --accent-blue: #2563eb;
-  --accent-blue-hover: #1d4ed8;
-  --accent-blue-light: rgba(37, 99, 235, 0.1);
+  /* Surfaces et bordures */
+  --surface: #f5f5f5;
+  --surface-hover: #eeeeee;
+  --border: #e0e0e0;
 
   /* Ombres subtiles */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 /* ============================================
@@ -44,16 +45,23 @@ body {
   color: var(--text-primary);
   font: 14px Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
 }
 
 a {
-  color: var(--accent-blue);
+  color: var(--accent-red);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 a:hover {
-  color: var(--accent-blue-hover);
+  color: var(--accent-red-hover);
   text-decoration: underline;
 }
 
@@ -62,10 +70,11 @@ a:hover {
    ============================================ */
 
 #hero {
-  background: linear-gradient(135deg, #0d1117 0%, #1a1f2e 100%);
+  background: linear-gradient(135deg, var(--accent-red) 0%, #e53935 100%);
   padding: 80px 20px;
   text-align: center;
-  border-bottom: 1px solid rgba(37, 99, 235, 0.2);
+  color: white;
+  box-shadow: var(--shadow-md);
 }
 
 .hero-content {
@@ -76,17 +85,15 @@ a:hover {
 #hero h1 {
   font-size: 3.5em;
   font-weight: 300;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.05em;
   margin-bottom: 15px;
-  background: linear-gradient(135deg, #f5f5f5 0%, #2563eb 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 #hero p {
   font-size: 1.3em;
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.95);
   margin-bottom: 40px;
 }
 
@@ -102,7 +109,6 @@ a:hover {
   font-size: 1em;
   padding: 14px 20px;
   border: none;
-  background-color: var(--surface);
   color: var(--text-primary);
   transition: all 0.3s ease;
   cursor: default;
@@ -111,15 +117,14 @@ a:hover {
 
 #bloc-recherche > input[type="text"] {
   flex: 1;
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(37, 99, 235, 0.2);
+  background-color: white;
+  border: 2px solid transparent;
 }
 
 #bloc-recherche > input[type="text"]:focus {
   outline: none;
-  background-color: rgba(255, 255, 255, 0.08);
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px var(--accent-blue-light);
+  border-color: var(--accent-red);
+  box-shadow: 0 0 0 3px var(--accent-red-light);
 }
 
 #bloc-recherche > input[type="text"]::placeholder {
@@ -131,27 +136,27 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--accent-blue);
-  border: 1px solid var(--accent-blue);
-  color: #ffffff;
+  background-color: white;
+  color: var(--accent-red);
   cursor: pointer;
   box-shadow: var(--shadow-md);
+  border: none;
+  font-weight: 600;
 }
 
 #bloc-recherche > button:hover {
-  background-color: var(--accent-blue-hover);
-  border-color: var(--accent-blue-hover);
-  box-shadow: var(--shadow-lg);
+  background-color: #f5f5f5;
   transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 #bloc-recherche > button:active {
-  background-color: #1a3fa0;
   transform: translateY(0);
 }
 
 #bloc-recherche > button svg {
   display: block;
+  stroke-width: 2.5;
 }
 
 /* ============================================
@@ -165,6 +170,7 @@ a:hover {
   max-width: 1200px;
   margin: 50px auto;
   padding: 0 20px;
+  width: 100%;
 }
 
 /* ============================================
@@ -194,7 +200,7 @@ a:hover {
   margin-bottom: 16px;
   padding: 16px 20px;
   background-color: var(--surface);
-  border-left: 3px solid var(--accent-blue);
+  border-left: 4px solid var(--accent-red);
   border-radius: 8px;
   line-height: 1.8;
   transition: all 0.2s ease;
@@ -208,9 +214,9 @@ a:hover {
 
 #bloc-resultats p.res::before {
   content: "→ ";
-  color: var(--accent-blue);
+  color: var(--accent-red);
   margin-right: 10px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 #bloc-resultats p.info-vide {
@@ -239,10 +245,10 @@ a:hover {
   gap: 12px;
   padding: 14px 16px;
   background-color: var(--surface);
-  border: 1px solid rgba(37, 99, 235, 0.2);
+  border: 2px solid var(--border);
   color: var(--text-primary);
   font-size: 1em;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -251,17 +257,18 @@ a:hover {
 
 .toggle-btn:hover {
   background-color: var(--surface-hover);
-  border-color: var(--accent-blue);
+  border-color: var(--accent-red);
+  color: var(--accent-red);
 }
 
 .toggle-btn:active {
-  background-color: rgba(37, 99, 235, 0.15);
+  background-color: var(--accent-red-light);
 }
 
 .toggle-icon {
   display: inline-block;
   transition: transform 0.3s ease;
-  color: var(--accent-blue);
+  color: var(--accent-red);
   font-weight: bold;
   font-size: 0.8em;
 }
@@ -294,12 +301,14 @@ a:hover {
   background-color: var(--surface);
   border-radius: 6px;
   transition: all 0.2s ease;
+  border: 1px solid var(--border);
 }
 
 #liste-favoris li:hover {
   background-color: var(--surface-hover);
   box-shadow: var(--shadow-sm);
   transform: translateX(2px);
+  border-color: var(--accent-red);
 }
 
 #liste-favoris li span {
@@ -311,7 +320,8 @@ a:hover {
 }
 
 #liste-favoris li span:hover {
-  color: var(--accent-blue);
+  color: var(--accent-red);
+  font-weight: 600;
 }
 
 #liste-favoris button.btn-supprimer-favori {
@@ -329,8 +339,8 @@ a:hover {
 }
 
 #liste-favoris button.btn-supprimer-favori:hover {
-  color: var(--accent-blue);
-  background-color: rgba(37, 99, 235, 0.1);
+  color: var(--accent-red);
+  background-color: var(--accent-red-light);
 }
 
 #section-favoris p.info-vide {
@@ -342,6 +352,49 @@ a:hover {
   font-style: italic;
   background-color: var(--surface);
   border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+
+#footer {
+  background-color: var(--surface);
+  border-top: 2px solid var(--border);
+  padding: 40px 20px;
+  margin-top: 60px;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#footer p {
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  font-size: 0.95em;
+}
+
+#footer p:last-child {
+  margin-bottom: 0;
+}
+
+#footer a {
+  color: var(--accent-red);
+  font-weight: 600;
+}
+
+#footer a:hover {
+  text-decoration: underline;
+}
+
+.footer-secondary {
+  font-size: 0.85em;
+  color: #999999;
+  margin-top: 15px;
 }
 
 /* ============================================
@@ -349,10 +402,53 @@ a:hover {
    ============================================ */
 
 button:focus-visible {
-  outline: 2px solid var(--accent-blue);
+  outline: 2px solid var(--accent-red);
   outline-offset: 2px;
 }
 
 input:focus-visible {
   outline: none;
+}
+
+/* ============================================
+   MEDIA QUERIES
+   ============================================ */
+
+@media (max-width: 900px) {
+  #conteneur {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  #section-favoris {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  #hero {
+    padding: 50px 15px;
+  }
+
+  #hero h1 {
+    font-size: 2.5em;
+  }
+
+  #hero p {
+    font-size: 1.1em;
+  }
+
+  #bloc-recherche {
+    flex-direction: column;
+  }
+
+  #bloc-recherche > input[type="text"],
+  #bloc-recherche > button {
+    width: 100%;
+  }
+
+  #conteneur {
+    margin: 30px auto;
+    padding: 0 15px;
+  }
 }

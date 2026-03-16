@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Recherche d'API</title>
+    <title>CROUS - Trouvez votre restaurant universitaire</title>
     <link rel="shortcut icon" type="image/x-icon" href="favicon-js.ico" />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -12,11 +12,11 @@
     <!-- HERO SECTION -->
     <header id="hero">
       <div class="hero-content">
-        <h1>Recherche d'API</h1>
-        <p>Explorez des milliers d'APIs publiques gratuites</p>
+        <h1>CROUS</h1>
+        <p>Trouvez les meilleurs restaurants universitaires près de vous</p>
         
         <div id="bloc-recherche">
-          <input type="text" placeholder="Ex : Pokémon, Météo, News..." />
+          <input type="text" placeholder="Ex : Grenoble, Lyon, Paris..." />
           <button id="btn-lancer-recherche" type="button" class="btn_clicable" title="Lancer la recherche">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8"></circle>
@@ -36,7 +36,7 @@
         </div>
 
         <div id="bloc-resultats">
-          <p class="info-vide">ici : afficher les différentes categories</p>
+          <p class="info-vide">(Aucune recherche effectuée)</p>
         </div>
       </section>
 
@@ -44,14 +44,14 @@
       <aside id="section-favoris">
         <button id="btn-toggle-favoris" class="toggle-btn" aria-expanded="false">
           <span class="toggle-icon">▼</span>
-          <span class="toggle-label">API(s) favorites</span>
+          <span class="toggle-label">Mes favoris</span>
         </button>
 
         <div id="favoris-content" class="favoris-content">
           <ul id="liste-favoris">
             <li>
-              <span title="Voir la favorite">API 1</span>
-              <button class="btn-supprimer-favori" type="button" title="Supprimer le favori" aria-label="Supprimer API 1">
+              <span title="Relancer la recherche">Restaurant 1</span>
+              <button class="btn-supprimer-favori" type="button" title="Supprimer le favori" aria-label="Supprimer Restaurant 1">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
                   <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -59,17 +59,8 @@
               </button>
             </li>
             <li>
-              <span title="Voir la favorite">API 2</span>
-              <button class="btn-supprimer-favori" type="button" title="Supprimer le favori" aria-label="Supprimer API 2">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </button>
-            </li>
-            <li>
-              <span title="Voir la favorite">API 3</span>
-              <button class="btn-supprimer-favori" type="button" title="Supprimer le favori" aria-label="Supprimer API 3">
+              <span title="Relancer la recherche">Restaurant 2</span>
+              <button class="btn-supprimer-favori" type="button" title="Supprimer le favori" aria-label="Supprimer Restaurant 2">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
                   <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -77,9 +68,19 @@
               </button>
             </li>
           </ul>
+          <p class="info-vide">(Aucun favori)</p>
         </div>
       </aside>
     </main>
+
+    <!-- FOOTER -->
+    <footer id="footer">
+      <div class="footer-content">
+        <p>Données alimentées par <a href="https://croustillant.bayfield.dev/fr" target="_blank" rel="noopener noreferrer">CROUStillant</a></p>
+        <p>Un projet open-source créé par <a href="https://github.com/CROUStillant-Developpement" target="_blank" rel="noopener noreferrer">Paul Bayfield</a></p>
+        <p class="footer-secondary">Informations sur les restaurants universitaires du CROUS en France et en Outre-Mer</p>
+      </div>
+    </footer>
 
     <script src="api.js"></script>
   </body>
