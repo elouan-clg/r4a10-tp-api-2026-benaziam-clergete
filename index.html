@@ -16,13 +16,28 @@
         <p>Trouvez les meilleurs restaurants universitaires près de vous</p>
         
         <div id="bloc-recherche">
-          <input type="text" placeholder="Ex : Grenoble, Lyon, Paris..." />
+          <input id="recherche" type="text" placeholder="Ex: grenoble, lyon, paris..." />
+        
           <button id="btn-lancer-recherche" type="button" class="btn_clicable" title="Lancer la recherche">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8"></circle>
               <path d="m21 21-4.35-4.35"></path>
             </svg>
           </button>
+        
+          <div class="favoris-dropdown">
+            <button id="btn-toggle-favoris" class="toggle-btn" aria-expanded="false">
+              <span class="toggle-icon">▼</span>
+              <span class="toggle-label">Mes favoris</span>
+            </button>
+        
+            <div id="favoris-content" class="favoris-content">
+              <ul id="liste-favoris">
+                <li>Test 1</li>
+              </ul>
+              <p class="info-vide">(Aucun favori)</p>
+            </div>
+          </div>
         </div>
       </div>
     </header>
@@ -36,41 +51,8 @@
         </div>
 
         <div id="bloc-resultats">
-          <p class="info-vide">(Aucune recherche effectuée)</p>
         </div>
       </section>
-
-      <!-- SECTION FAVORIS (DÉROULABLE) -->
-      <aside id="section-favoris">
-        <button id="btn-toggle-favoris" class="toggle-btn" aria-expanded="false">
-          <span class="toggle-icon">▼</span>
-          <span class="toggle-label">Mes favoris</span>
-        </button>
-
-        <div id="favoris-content" class="favoris-content">
-          <ul id="liste-favoris">
-            <li>
-              <span title="Relancer la recherche">Restaurant 1</span>
-              <button class="btn-supprimer-favori" type="button" title="Supprimer le favori" aria-label="Supprimer Restaurant 1">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </button>
-            </li>
-            <li>
-              <span title="Relancer la recherche">Restaurant 2</span>
-              <button class="btn-supprimer-favori" type="button" title="Supprimer le favori" aria-label="Supprimer Restaurant 2">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </button>
-            </li>
-          </ul>
-          <p class="info-vide">(Aucun favori)</p>
-        </div>
-      </aside>
     </main>
 
     <!-- FOOTER -->
@@ -82,6 +64,7 @@
       </div>
     </footer>
 
-    <script src="api.js"></script>
+    <script type="module" src="./js/main.js"></script>
+    <script type="module" src="./js/appel_region.js"></script>
   </body>
 </html>
