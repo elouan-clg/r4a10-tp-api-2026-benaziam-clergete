@@ -25,8 +25,6 @@ export function allRegion() {
 
 //appel l'Api pour recevoir toutes les restaurants CROUS de la région demandé
 export async function allRestoFromRegion(regionId, elementRech=null ) {
-    //let ListeTTResto = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.croustillant.menu/v1/regions/${regionId}/restaurants`)}`);
-
     let ListeTTResto = await fetch(`https://api.croustillant.menu/v1/regions/${regionId}/restaurants`)
     .then((resp) => {
         if (!resp.ok) {throw new Error('Erreur HTTP : ' + resp.status); }
@@ -36,24 +34,22 @@ export async function allRestoFromRegion(regionId, elementRech=null ) {
         console.error(err);
         throw err;
     });
-    //ListeTTResto = await ListeTTResto.json;
-    console.log(ListeTTResto.data);
-    console.log(`recherche ${elementRech}`);
+
+    //console.log(ListeTTResto.data);
+    //console.log(`recherche ${elementRech}`);
     if (elementRech==null) {
-            console.log("rentre dans if");
+            //console.log("rentre dans if");
             return ListeTTResto.data;
 
         } else {
-            console.log("rentre dans else");
+            //console.log("rentre dans else");
             
             let listeAcceptant = [];
             let i = 0;//sert pour construire les index de la liste
             ListeTTResto.data.forEach(element => {
-                console.log("va faire le regex");
-                console.log("/."+elementRech+"./")
+                //console.log("/."+elementRech+"./")
                 if (element.nom.match(elementRech)) {
-                    console.log("c'est acceptant");
-                    
+                    //console.log("c'est acceptant");
                     listeAcceptant[i] = element
                     i++;
                 }
@@ -61,42 +57,3 @@ export async function allRestoFromRegion(regionId, elementRech=null ) {
             return listeAcceptant;
         }
 }
-
-
-//appel l'Api pour recevoir toutes les restaurants CROUS de la région demandé
-// export function allRestoFromRegion(regionId, elementRech=null ) {
-//     let promiseObj = fetch(`https://api.croustillant.menu/v1/regions/${regionId}/restaurants`);
-//     let ListeTTResto =  promiseObj.then((resp)  => {
-//         if (!resp.ok) {throw new Error('Erreur HTTP : ' + resp.status); }
-//         //console.log(resp);
-//         return resp.json().data;
-//     })
-//     .catch((err) =>{
-//         console.error(err);
-//         throw err;
-//     });
-
-//     console.log(ListeTTResto);
-    
-//     if (elementRech==null) {
-//             console.log("rentre dans if");
-//             return ListeTTResto.data;
-
-//         } else {
-//             console.log("rentre dans else");
-            
-//             let listeAcceptant = [];
-            
-//             ListeTTResto.data.forEach(element => {
-//                 console.log("va faire le regex");
-                
-//                 if (element.nom.match("*"+elementRech+"*")) {
-//                     console.log("c'est acceptant");
-                    
-//                     listeAcceptant[i] = element
-//                     i++;
-//                 }
-//             });
-//             return listeAcceptant;
-//         }
-// }

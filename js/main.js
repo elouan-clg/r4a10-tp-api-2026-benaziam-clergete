@@ -25,7 +25,7 @@ view.reserachBtn.addEventListener("click", async function () {
         }
         console.log(mesResto);
         
-        //afficherRegions(mesRegions.data);
+        afficherRegions(mesRegions.data);
     } catch(err) {
         console.error(err);
     }
