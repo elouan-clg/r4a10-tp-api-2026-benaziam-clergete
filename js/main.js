@@ -11,8 +11,21 @@ let regionClickListener = function (event, codeRegion) {
 
 view.reserachBtn.addEventListener("click", async function () {
     try {
-        let mesRegions = await api.allRegion();
-        afficherRegions(mesRegions.data);
+        let idRegion = window.location.search.replace("?", "").split("&")[0].split("=")[1];
+
+        console.log(idRegion);
+        let eleRecherche = view.reserachInput.value;
+        //console.log(eleRecherche);
+        let mesResto;
+        if (eleRecherche != null && eleRecherche != '') {
+          mesResto = await api.allRestoFromRegion(idRegion, eleRecherche);
+        }
+        else{
+          mesResto = await api.allRestoFromRegion(idRegion);
+        }
+        console.log(mesResto);
+        
+        //afficherRegions(mesRegions.data);
     } catch(err) {
         console.error(err);
     }
