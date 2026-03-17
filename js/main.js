@@ -1,13 +1,29 @@
 import { view } from './vue.js';
 import * as api from "./api.js";
-import { afficherRegions } from './appel_region.js';
+//import { afficher } from './appel_region.js';
 
-let listeRegion = [];
+export function afficher(data) {
+    // Tri par ordre alphabétique
+    //data.sort((a, b) => a.libelle.localeCompare(b.libelle));
 
-let regionClickListener = function (event, codeRegion) {
-    console.log(codeRegion);
-    api.allRestoFromRegion(codeRegion);
-};
+    // Construire tout le HTML d'un coup
+    //let html = '';
+    let div = view.divResult;
+    data.forEach(element => {
+      //let afficheMenu = createELement();
+
+      div.append(element.nom);
+      //div.append(afficheMenu);
+        // html += `
+        //     <a href="liste_restaurants.html?region=${element.code}">
+        //         <p class="res">${element.libelle}</p>
+        //     </a>
+        // `;
+    });
+
+    // Injecter une seule fois
+    //view.divResult.innerHTML = html;
+}
 
 view.reserachBtn.addEventListener("click", async function () {
     try {
@@ -25,7 +41,7 @@ view.reserachBtn.addEventListener("click", async function () {
         }
         console.log(mesResto);
         
-        afficherRegions(mesRegions.data);
+        afficher(mesResto);
     } catch(err) {
         console.error(err);
     }
