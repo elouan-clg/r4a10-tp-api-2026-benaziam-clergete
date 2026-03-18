@@ -24,8 +24,8 @@ export function allRegion() {
 }
 
 //appel l'Api pour recevoir toutes les restaurants CROUS de la région demandé
-export async function allRestoFromRegion(regionId, elementRech=null ) {
-    let ListeTTResto = await fetch(`https://api.croustillant.menu/v1/regions/${regionId}/restaurants`)
+export async function allRestoFromRegion(regionId) {
+    let resonseResto = await fetch(`https://api.croustillant.menu/v1/regions/${regionId}/restaurants`)
     .then((resp) => {
         if (!resp.ok) {throw new Error('Erreur HTTP : ' + resp.status); }
         return resp.json();
@@ -34,26 +34,32 @@ export async function allRestoFromRegion(regionId, elementRech=null ) {
         console.error(err);
         throw err;
     });
+    return resonseResto.data
+}
 
-    //console.log(ListeTTResto.data);
-    //console.log(`recherche ${elementRech}`);
-    if (elementRech==null) {
+export async function RestoWith(listeResto, elementRech = null) {
+    listeResto;
+    console.log(listeResto);
+    console.log(`recherche ${elementRech}`);
+    if (elementRech == null) {
             //console.log("rentre dans if");
-            return ListeTTResto.data;
+            return listeResto;
 
-        } else {
-            //console.log("rentre dans else");
-            
-            let listeAcceptant = [];
-            let i = 0;//sert pour construire les index de la liste
-            ListeTTResto.data.forEach(element => {
-                //console.log("/."+elementRech+"./")
-                if (element.nom.match(elementRech)) {
-                    //console.log("c'est acceptant");
-                    listeAcceptant[i] = element
-                    i++;
-                }
-            });
-            return listeAcceptant;
-        }
+    } else {
+        //console.log("rentre dans else");
+        
+        let listeAcceptant = [];
+        console.log(listeResto);
+        
+        let i = 0;//sert pour construire les index de la liste
+        listeResto.forEach(element => {
+            console.log("/."+elementRech+"./")
+            if (element.nom.match(elementRech)) {
+                //console.log("c'est acceptant");
+                listeAcceptant[i] = element
+                i++;
+            }
+        });
+        return listeAcceptant;
+    }
 }
