@@ -28,7 +28,7 @@ export async function allRestoFromRegion(regionId, elementRech=null ) {
     let ListeTTResto = await fetch(`https://api.croustillant.menu/v1/regions/${regionId}/restaurants`)
     .then((resp) => {
         if (!resp.ok) {throw new Error('Erreur HTTP : ' + resp.status); }
-        return resp.json();
+        return resp.json().data;
     })
     .catch((err) => {
         console.error(err);
@@ -41,19 +41,32 @@ export async function allRestoFromRegion(regionId, elementRech=null ) {
             //console.log("rentre dans if");
             return ListeTTResto.data;
 
-        } else {
-            //console.log("rentre dans else");
-            
-            let listeAcceptant = [];
-            let i = 0;//sert pour construire les index de la liste
-            ListeTTResto.data.forEach(element => {
-                //console.log("/."+elementRech+"./")
-                if (element.nom.match(elementRech)) {
-                    //console.log("c'est acceptant");
-                    listeAcceptant[i] = element
-                    i++;
-                }
-            });
-            return listeAcceptant;
-        }
+    } else {
+        //console.log("rentre dans else");
+        const re = new RegExp(String.raw`.*${elementRech}.*`, "gi");//.*"+elementRech+".*/gi;
+        let listeAcceptant = [];
+        let i = 0;//sert pour construire les index de la liste
+        ListeTTResto.data.forEach(element => {
+            //console.log("/."+elementRech+"./gi")
+            if (element.nom.match(re) != null) {
+                //console.log(element.nom);
+                //console.log("c'est acceptant");
+                listeAcceptant[i] = element
+                i++;
+            }
+        });
+        return listeAcceptant;
+    }
+}
+//appel l'Api pour recevoir les info du restaurant choisis
+export function RestoData(code) {
+    return fetch(`https://api.croustillant.menu/v1/restaurants/${code}/menu`)
+    .then((resp) => {
+        if (!resp.ok) {throw new Error('Erreur HTTP : ' + resp.status); }
+        return resp.json().data;
+    })
+    .catch((err) => {
+        console.error(err);
+        throw err;
+    });
 }
