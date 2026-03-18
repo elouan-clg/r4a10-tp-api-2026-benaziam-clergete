@@ -13,4 +13,6 @@ export const view = {
   //listRegions: document.getElementsByClassName('region'),
 
   listeRep: document.getElementsByClassName('rep'),
+
+  divRepas: document.getElementById("repas"),
 };

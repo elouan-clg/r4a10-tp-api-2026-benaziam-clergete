@@ -19,15 +19,52 @@ export function afficherResto(data) {
       eleCont.append(element.nom);
       eleCont.classList.add('res');
       eleCont.id = element.code;
-      eleCont.addEventListener("click", restoClickListener(element.code));
+      eleCont.addEventListener("click", () => restoClickListener(element.code));
       div.append(eleCont);
     });
 
-}
+} 
 //mets à jour le menu quand on clique sur un restaurant CROUS
-let restoClickListener = async function (event) {
-  monResto = await api.allRestoFromRegion(event.code);
+let restoClickListener = async function (event) { 
+  //console.log(event);
+  let monResto = await api.RestoData(event);
+  //console.log(monResto);
+  
+  const div = view.divRepas;
+    // while(div.length > 0){
+    //   div[0].parentNode.removeChild(elements[0]);
+    // }
+    //pour chaque jours
+  monResto.data.forEach(element => {
+      let unJour = document.createElement('div');
+      unJour.append(element.date);    
 
+      // console.log(element.repas[0]);
+      // console.log(element.repas[0].categories[0]);
+      // console.log(element.repas[0].categories[0].libelle);
+      // console.log(element.repas[0].categories[0].plats);
+      // console.log(element.repas[0].categories[0].plats[0].libelle);
+      //pour aider à comprendre ces if dans ces if: décommenter les lignes du dessus
+      //pour chaque jours
+      element.repas[0].categories.forEach(typePlat => {
+          //lui mettre un sous titre puis lui donner la liste de commestibles
+          let soustitre = document.createElement('h3');
+          soustitre.append(typePlat.libelle);
+          //pour chaqueligne
+          // console.log(typePlat);
+          // console.log(typePlat.plats);
+          typePlat.plats.forEach(lignePlat => {
+            console.log(lignePlat.libelle);
+            //mettre le nom dans un p
+            let platLigne = document.createElement('p');
+            platLigne.append(lignePlat.libelle);
+            
+            soustitre.append(platLigne);
+          });
+          unJour.append(soustitre);
+      });
+      div.append(unJour);
+    });
 };
 
 //mets à jours les recherches de CROUS par appuie sur le bouton chercher

@@ -1,15 +1,4 @@
 
-
-// export function randomCall() {
-
-//     let promiseObj = fetch("https://www.freepublicapis.com/api/random");
-//     promiseObj.then((resp) => resp.json())
-//         .then((data) => {
-//             console.log(data);
-//         })
-// }
-//randomCall();
-
 //appel l'Api pour recevoir toutes les régions
 export function allRegion() {
     return fetch('https://api.croustillant.menu/v1/regions')
@@ -24,23 +13,22 @@ export function allRegion() {
 }
 
 //appel l'Api pour recevoir toutes les restaurants CROUS de la région demandé
-export async function allRestoFromRegion(regionId, elementRech=null ) {
+export async function allRestoFromRegion(regionId, elementRech=null ) {  
     let ListeTTResto = await fetch(`https://api.croustillant.menu/v1/regions/${regionId}/restaurants`)
     .then((resp) => {
         if (!resp.ok) {throw new Error('Erreur HTTP : ' + resp.status); }
-        return resp.json().data;
+        return resp.json();
     })
     .catch((err) => {
         console.error(err);
         throw err;
     });
 
-    //console.log(ListeTTResto.data);
+    console.log(ListeTTResto.data);
     //console.log(`recherche ${elementRech}`);
     if (elementRech==null) {
             //console.log("rentre dans if");
             return ListeTTResto.data;
-
     } else {
         //console.log("rentre dans else");
         const re = new RegExp(String.raw`.*${elementRech}.*`, "gi");//.*"+elementRech+".*/gi;
@@ -58,15 +46,21 @@ export async function allRestoFromRegion(regionId, elementRech=null ) {
         return listeAcceptant;
     }
 }
+
+
 //appel l'Api pour recevoir les info du restaurant choisis
-export function RestoData(code) {
-    return fetch(`https://api.croustillant.menu/v1/restaurants/${code}/menu`)
+export function RestoData(code) { 
+    //console.log(code);
+    
+    let mr = fetch(`https://api.croustillant.menu/v1/restaurants/${code}/menu`)
     .then((resp) => {
         if (!resp.ok) {throw new Error('Erreur HTTP : ' + resp.status); }
-        return resp.json().data;
+        return resp.json();
     })
     .catch((err) => {
         console.error(err);
         throw err;
     });
+    //console.log(mr);
+    return mr;
 }

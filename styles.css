@@ -479,3 +479,12 @@ input:focus-visible {
   box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
   background: linear-gradient(145deg, var(--surface-hover), rgba(211,47,47,0.05));
 }
+
+
+h3{
+  color: var(--accent-color);
+}
+
+h3 *{
+  color: var(--text-primary);
+}
