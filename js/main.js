@@ -29,15 +29,16 @@ let restoClickListener = async function (event) {
   //console.log(event);
   let monResto = await api.RestoData(event);
   //console.log(monResto);
-  
-  const div = view.divRepas;
-    // while(div.length > 0){
-    //   div[0].parentNode.removeChild(elements[0]);
-    // }
+
+  const elements = document.getElementsByClassName('repas_jour');
+    while(elements.length > 0){
+      elements[0].parentNode.removeChild(elements[0]);
+    }
     //pour chaque jours
   monResto.data.forEach(element => {
       let unJour = document.createElement('div');
-      unJour.append(element.date);    
+      unJour.append(element.date);
+      unJour.classList.add('repas_jour');
 
       // console.log(element.repas[0]);
       // console.log(element.repas[0].categories[0]);
@@ -54,7 +55,7 @@ let restoClickListener = async function (event) {
           // console.log(typePlat);
           // console.log(typePlat.plats);
           typePlat.plats.forEach(lignePlat => {
-            console.log(lignePlat.libelle);
+            //console.log(lignePlat.libelle);
             //mettre le nom dans un p
             let platLigne = document.createElement('p');
             platLigne.append(lignePlat.libelle);
@@ -63,7 +64,7 @@ let restoClickListener = async function (event) {
           });
           unJour.append(soustitre);
       });
-      div.append(unJour);
+      view.divRepas.append(unJour);
     });
 };
 
