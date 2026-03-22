@@ -19,9 +19,16 @@ export function afficherResto(data) {
     let div = view.divResult;
 
     //vide l'affichage
+    //viderClass('res');
     const elements = document.getElementsByClassName('res');
     while(elements.length > 0){
         elements[0].parentNode.removeChild(elements[0]);
+    }
+    //3eme bocle non optimisé: boucle pour vider les favoris existants
+    //viderClass('btn-favoris)');
+    const favsAuRevoirs = document.getElementsByClassName('btn-favoris');
+    while(favsAuRevoirs.length > 0){
+        favsAuRevoirs[0].parentNode.removeChild(favsAuRevoirs[0]);
     }
 
     //affiche les resto potentiels
@@ -37,7 +44,7 @@ export function afficherResto(data) {
 
       //permet de le mettre en favoris
       let boutonFav = document.createElement('button');
-      //boutonFav.class = `btn-favoris ${element.nom}, ${element.code}`;
+      boutonFav.classList.add(`btn-favoris`);// ${element.nom}, ${element.code}`);
       boutonFav.type="button";
       boutonFav.title="Ajouter la recherche aux favoris";
       //mets la petite étoile dans le bouton
@@ -58,7 +65,7 @@ export function afficherResto(data) {
 //mets à jour le menu quand on clique sur un restaurant CROUS
 let restoClickListener = async function (code) { 
   let monResto = await api.menuData(code);
-  const elements = document.getElementsByClassName('repas_jour');
+    const elements = document.getElementsByClassName('repas_jour');
     while(elements.length > 0){
       elements[0].parentNode.removeChild(elements[0]);
     }
@@ -91,7 +98,6 @@ let restoClickListener = async function (code) {
       });
       view.divRepas.append(unJour);
     });
-    //console.log(monResto.data[0]);
 };
 
 async function recherchResto() {
@@ -123,3 +129,12 @@ view.reserachBtn.addEventListener("click", async function () {
 view.reserachInput.addEventListener("keypress",  async function () {
     recherchResto();
 });
+
+
+
+function viderClass(nomChamp) {
+  const elements = document.getElementsByClassName('repas_jour');
+    while(elements.length > 0){
+      elements[0].parentNode.removeChild(elements[0]);
+    }
+}
