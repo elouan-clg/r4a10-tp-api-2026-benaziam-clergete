@@ -15,4 +15,7 @@ export const view = {
   listeRep: document.getElementsByClassName('rep'),
 
   divRepas: document.getElementById("repas"),
+
+
+  favBtn: document.getElementsByClassName("btn-favoris"),
 };
