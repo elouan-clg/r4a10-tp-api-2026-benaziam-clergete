@@ -12,39 +12,14 @@ export function allRegion() {
     });
 }
 
-//appel l'Api pour recevoir toutes les restaurants CROUS de la région demandé
-export async function allRestoFromRegion(regionId, elementRech=null ) {  
-    let ListeTTResto = await fetch(`https://api.croustillant.menu/v1/regions/${regionId}/restaurants`)
-    .then((resp) => {
-        if (!resp.ok) {throw new Error('Erreur HTTP : ' + resp.status); }
-        return resp.json();
-    })
-    .catch((err) => {
-        console.error(err);
-        throw err;
-    });
-
-    //console.log(ListeTTResto.data);
-    //console.log(`recherche ${elementRech}`);
-    if (elementRech==null) {
-            //console.log("rentre dans if");
-            return ListeTTResto.data;
-    } else {
-        //console.log("rentre dans else");
-        const re = new RegExp(String.raw`.*${elementRech}.*`, "gi");//.*"+elementRech+".*/gi;
-        let listeAcceptant = [];
-        let i = 0;//sert pour construire les index de la liste
-        ListeTTResto.data.forEach(element => {
-            //console.log("/."+elementRech+"./gi")
-            if (element.nom.match(re) != null) {
-                //console.log(element.nom);
-                //console.log("c'est acceptant");
-                listeAcceptant[i] = element
-                i++;
-            }
-        });
-        return listeAcceptant;
+//appel l'Api pour recevoir tous les restaurants CROUS de la région demandée
+export async function allRestoFromRegion(regionId) {  
+    let resp = await fetch(`https://api.croustillant.menu/v1/regions/${regionId}/restaurants`);
+    if (!resp.ok) {
+        throw new Error('Erreur HTTP : ' + resp.status); 
     }
+    let json = await resp.json();
+    return json.data;
 }
 
 
@@ -99,9 +74,12 @@ export function saveStateToClient(nom, code){
     if (listeResto) {
         console.log("rentre dans le if donc listResto non null");
         
-        let listeKVResto = JSON.parse(listeResto);        
-        listeKVResto.push(RestoKV)
-        localStorage.setItem("pref", JSON.stringify(listeKVResto));
+        let listeKVResto = JSON.parse(listeResto);
+        if (!listeKVResto.some(resto => resto.code === code)) { //on verif que le resto n'est pas deja favoris
+            listeKVResto.push(RestoKV);
+            localStorage.setItem("pref", JSON.stringify(listeKVResto));
+        }
+    
     }
     //sinon je créer le Local Storage
     else{

@@ -31,8 +31,6 @@ async function appelRegion() {
     }
 }
 
-appelRegion();
-
 //roulette de favoris
 document.addEventListener('DOMContentLoaded', function() {
   const toggleBtn = document.getElementById('btn-toggle-favoris');
@@ -60,24 +58,33 @@ let restoClickListener = async function (code) {
         
         //pour chaque jours
         monResto.data.forEach(element => {
-        let unJour = document.createElement('div');
-        unJour.append(element.date);
-        unJour.classList.add('repas_favoris');
-        //pour chaque jours
-        element.repas[0].categories.forEach(typePlat => {
-            //lui mettre un sous titre puis lui donner la liste de commestibles
-            let soustitre = document.createElement('h3');
-            soustitre.append(typePlat.libelle);
-            //pour chaqueligne
-            typePlat.plats.forEach(lignePlat => {
-                //mettre le nom dans un p
-                let platLigne = document.createElement('p');
-                platLigne.append(lignePlat.libelle);
-                soustitre.append(platLigne);
-            });
-            unJour.append(soustitre);
-        });        
-        view.divFavRepas.append(unJour);
+            let unJour = document.createElement('div');
+            unJour.append(element.date);
+            unJour.classList.add('repas_favoris');
+            
+            // on check si y a bien un repas prevu
+            if (element.repas && element.repas.length > 0 && element.repas[0].categories) {
+                //pour chaque jours
+                element.repas[0].categories.forEach(typePlat => {
+                    //lui mettre un sous titre puis lui donner la liste de commestibles
+                    let soustitre = document.createElement('h3');
+                    soustitre.append(typePlat.libelle);
+                    //pour chaqueligne
+                    typePlat.plats.forEach(lignePlat => {
+                        //mettre le nom dans un p
+                        let platLigne = document.createElement('p');
+                        platLigne.append(lignePlat.libelle);
+                        soustitre.append(platLigne);
+                    });
+                    unJour.append(soustitre);
+                }); 
+            } else {
+                let msgVide = document.createElement('p');
+                msgVide.append("Pas de menu pour ce jour");
+                unJour.append(msgVide);
+            }
+                   
+            view.divFavRepas.append(unJour);
         });
     }catch (error) {
         let info = document.createElement('p');
@@ -90,7 +97,9 @@ let restoClickListener = async function (code) {
 //parcours la liste des favoris, si existe, du locale storage
 async function appelFavoris() {
     let listeFavoris = await api.retrieveStateFromClient();
-    if (listeFavoris) {        
+    
+    // on check si la liste existe ET n'est pas vide
+    if (listeFavoris && listeFavoris.length > 0) {        
         listeFavoris.forEach(element => {
             let resto = document.createElement('li');
             resto.append(element["nom"]);         
@@ -112,4 +121,3 @@ appelFavoris();
 
 //appel toutes les région
 appelRegion();
-

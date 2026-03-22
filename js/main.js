@@ -2,19 +2,6 @@ import { view } from './vue.js';
 import * as api from "./api.js";
 //import { afficher } from './appel_region.js';
 
-async function favorislickListener(nom, code) {
-  try {
-    console.log("fav potentiel");
-    console.log(nom);
-    console.log(code);
-    let codeResto = view.favBtn.id.split(" ")[2];
-    //sauvegarde le dernier resto cliqué en favoris //optimisable si on peux avoir le nom dans l'id du bouton
-    api.saveStateToClient(nom, code);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 export function afficherResto(data) {
     let div = view.divResult;
 
@@ -84,20 +71,28 @@ let restoClickListener = async function (code) {
       // console.log(element.repas[0].categories[0].plats[0].libelle);
       //pour *aider*(pas résoudre) à comprendre ces if dans ces if: décommenter les lignes du dessus
 
-      //pour chaque jours
-      element.repas[0].categories.forEach(typePlat => {
-          //lui mettre un sous titre puis lui donner la liste de commestibles
-          let soustitre = document.createElement('h3');
-          soustitre.append(typePlat.libelle);
-          //pour chaqueligne
-          typePlat.plats.forEach(lignePlat => {
-            //mettre le nom dans un p
-            let platLigne = document.createElement('p');
-            platLigne.append(lignePlat.libelle);
-            soustitre.append(platLigne);
+      // on check si y a bien un repas prevu et si les categories existent
+      if (element.repas && element.repas.length > 0 && element.repas[0].categories) {
+          //pour chaque jours
+          element.repas[0].categories.forEach(typePlat => {
+              //lui mettre un sous titre puis lui donner la liste de commestibles
+              let soustitre = document.createElement('h3');
+              soustitre.append(typePlat.libelle);
+              //pour chaqueligne
+              typePlat.plats.forEach(lignePlat => {
+                //mettre le nom dans un p
+                let platLigne = document.createElement('p');
+                platLigne.append(lignePlat.libelle);
+                soustitre.append(platLigne);
+              });
+              unJour.append(soustitre);
           });
-          unJour.append(soustitre);
-      });
+      } else {
+          let msgVide = document.createElement('p');
+          msgVide.append("Pas de menu pour ce jour");
+          unJour.append(msgVide);
+      }
+      
       view.divRepas.append(unJour);
     });
   }
@@ -106,41 +101,41 @@ let restoClickListener = async function (code) {
   }
 };
 
-async function recherchResto() {
-  try {
-        let idRegion = window.location.search.replace("?", "").split("&")[0].split("=")[1];
+let tousLesRestos = []; // on garde tout en mémoire pour éviter de spam l'API
 
-        //console.log(idRegion);
-        let eleRecherche = view.reserachInput.value;
-        //console.log(eleRecherche);
-        let mesResto;
-        if (eleRecherche != null && eleRecherche != '') {
-          mesResto = await api.allRestoFromRegion(idRegion, eleRecherche);
-        }
-        else{
-          mesResto = await api.allRestoFromRegion(idRegion);
-        }
-        //console.log(mesResto);
-        afficherResto(mesResto);
+async function initPage() {
+    let idRegion = new URLSearchParams(window.location.search).get("region");
+    if (!idRegion) return;
+
+    try {
+        tousLesRestos = await api.allRestoFromRegion(idRegion);
+        afficherResto(tousLesRestos);
     } catch(err) {
         console.error(err);
     }
 }
-//mets à jours les recherches de CROUS par appuie sur le bouton chercher
-view.reserachBtn.addEventListener("click", async function () {
-    recherchResto();
-});
 
-//mets à jours les recherches de CROUS par appuie d'une touche
-view.reserachInput.addEventListener("keypress",  async function () {
-    recherchResto();
-});
+function filtrerRestos() {
+    let texte = view.reserachInput.value.toLowerCase();
+    
+    let resultats = tousLesRestos.filter(resto => 
+        resto.nom.toLowerCase().includes(texte)
+    );
+    
+    afficherResto(resultats);
+}
 
+// mets à jour les recherches quand on clique ou qu'on tape
+view.reserachBtn.addEventListener("click", filtrerRestos);
+view.reserachInput.addEventListener("input", filtrerRestos);
 
-
+// vide l'affichage précédent
 function viderClass(nomChamp) {
-  const elements = document.getElementsByClassName('repas_jour');
+    const elements = document.getElementsByClassName(nomChamp);
     while(elements.length > 0){
-      elements[0].parentNode.removeChild(elements[0]);
+        elements[0].parentNode.removeChild(elements[0]);
     }
 }
+
+// lance le chargement au démarrage
+initPage();
