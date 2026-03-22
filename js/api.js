@@ -85,30 +85,42 @@ export function restoData(code) {
 
 
 //sauvegarde d'un restaurant en favoris
+//forme [{"nom":"RU1","code":1}, {"nom":"cafet","code":2}] ou [] si aucun favoris
 export function saveStateToClient(nom, code){
-    console.log(nom, code);
-    
     let RestoKV = {nom, code};
-    console.log(RestoKV);
-    
     let listeResto = localStorage.getItem(`pref`);
-    console.log(listeResto);
-    console.log(listeResto != null);
+    let listeKVResto = JSON.parse(listeResto) ?? [];
+    //si le resto n'est pas en favoris, on l'ajoute
+    let i =0;
+    while (i < listeKVResto.length && listeKVResto[i]!= RestoKV) {
+        console.log("-----");console.log(listeKVResto[i]== RestoKV);
+        console.log(`i est ${i}, listeKVReso[i] est `);
+        console.log(listeKVResto[i]);
+        console.log(`et RestoKV est `);
+        console.log(RestoKV);
+        i++;            
+    }
+    console.log("-----");
+
     
-    //si j'ai des éléments dans ma liste je l'ajoute
-    if (listeResto) {
-        console.log("rentre dans le if donc listResto non null");
-        
-        let listeKVResto = JSON.parse(listeResto);        
+    console.log(listeKVResto[i]!= RestoKV);
+    console.log(i== listeKVResto.length);
+    
+    if (i == listeKVResto.length && listeKVResto[i]!= RestoKV) {
         listeKVResto.push(RestoKV)
+    }
+    //sinon on l'enlève
+    else{
+        listeKVResto.pop(RestoKV)
+    }
+    if(listeKVResto.length > 0){
         localStorage.setItem("pref", JSON.stringify(listeKVResto));
     }
-    //sinon je créer le Local Storage
     else{
-        localStorage.setItem("pref", JSON.stringify([RestoKV]));
+        localStorage.setItem("pref", JSON.stringify(null));
     }
+    
 }
-
 
 // renvoie la liste des restorants mis en favoris
 export function retrieveStateFromClient(){
