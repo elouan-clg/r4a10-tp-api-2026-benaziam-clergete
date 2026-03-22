@@ -97,7 +97,10 @@ let restoClickListener = async function (code) {
     });
   }
   catch (error) {
-    view.divRepas.append("Aucune information donnée par ce CROUS");
+    let info = document.createElement('p');
+    info.classList.add('repas_jour');
+    info.append("Aucune information donnée par ce CROUS");
+    view.divRepas.append(info);
   }
 };
 
