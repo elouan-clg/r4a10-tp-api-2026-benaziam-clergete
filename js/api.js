@@ -57,7 +57,15 @@ export function restoData(code) {
     return mr;
 }
 
-
+//permet de faire un booléen convenable pour savoir si l'objet existe déjà
+function compareResto(resto1, resto2) {
+    try{    
+        return resto1["nom"] == resto2["nom"] && resto1["code"] == resto2["code"];
+    } catch (error) {
+        //il y a eu un problème quelque part, c'est pas identique
+        return false
+    }
+}
 
 //sauvegarde d'un restaurant en favoris
 //forme [{"nom":"RU1","code":1}, {"nom":"cafet","code":2}] ou [] si aucun favoris
@@ -67,25 +75,19 @@ export function saveStateToClient(nom, code){
     let listeKVResto = JSON.parse(listeResto) ?? [];
     //si le resto n'est pas en favoris, on l'ajoute
     let i =0;
-    while (i < listeKVResto.length && listeKVResto[i]!= RestoKV) {
-        console.log("-----");console.log(listeKVResto[i]== RestoKV);
-        console.log(`i est ${i}, listeKVReso[i] est `);
-        console.log(listeKVResto[i]);
-        console.log(`et RestoKV est `);
-        console.log(RestoKV);
+    let dejaPresent = false;
+    while (i < listeKVResto.length && !dejaPresent ) {
+        dejaPresent = compareResto(listeKVResto[i],RestoKV);
         i++;            
     }
-    console.log("-----");
-
     
-    console.log(listeKVResto[i]!= RestoKV);
-    console.log(i== listeKVResto.length);
-    
-    if (i == listeKVResto.length && listeKVResto[i]!= RestoKV) {
+    if (i == listeKVResto.length && !dejaPresent) {
+        //console.log("on ajoute");
         listeKVResto.push(RestoKV)
     }
     //sinon on l'enlève
     else{
+        //console.log("on enlève");
         listeKVResto.pop(RestoKV)
     }
     if(listeKVResto.length > 0){
