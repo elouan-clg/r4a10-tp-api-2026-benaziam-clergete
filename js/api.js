@@ -111,30 +111,11 @@ export function saveStateToClient(nom, code){
 
 
 // renvoie la liste des restorants mis en favoris
-async function retrieveStateFromClient(){
+export function retrieveStateFromClient(){
 
-let chaineJSON = localStorage.getItem("memoryContent");
-if(chaineJSON){
-    //this.#memory = JSON.parse(chaineJSON);
-}
-
-chaineJSON = localStorage.getItem("editableButtonsContent");
-if(chaineJSON){
-    
-    //alert("dans chainJSon");
-    //console.log(this.#editableButtons);
-    let objNew = JSON.parse(chaineJSON);
-    //console.log(objNew);
-    //for (const id in this.#editableButtons) {
-    //console.log(this.#editableButtons[id]);
-    //console.log(this.#editableButtons[id].idBtn);
-    //console.log(this.getValueEditableButton(id));
-    //console.log(this.#editableButtons[id]);
-    if (objNew[id] != null) {
-        this.setValueEditableButton(id, objNew[id]);
+let chaineJSON = localStorage.getItem("pref");
+    if(chaineJSON){
+        return JSON.parse(chaineJSON);
     }
-    //console.log(objNew[id]);
-    
-    //this.setValueEditableButton(i, valueJSON.parse(chaineJSON)[i]);
-    }
+    return false;
 }

@@ -50,7 +50,7 @@ export function afficherResto(data) {
       //mets la petite étoile dans le bouton
       let etoile = document.createElement('img');
       etoile.src="images/etoile-vide.svg";
-      etoile.alt="Etoile vide";
+      etoile.alt="Liste Favoris";
       etoile.width="22";
       boutonFav.append(etoile);
       boutonFav.addEventListener("click", () => {
@@ -63,12 +63,14 @@ export function afficherResto(data) {
 }
 
 //mets à jour le menu quand on clique sur un restaurant CROUS
-let restoClickListener = async function (code) { 
-  let monResto = await api.menuData(code);
-    const elements = document.getElementsByClassName('repas_jour');
-    while(elements.length > 0){
-      elements[0].parentNode.removeChild(elements[0]);
-    }
+let restoClickListener = async function (code) {  
+  const elements = document.getElementsByClassName('repas_jour');
+  while(elements.length > 0){
+    elements[0].parentNode.removeChild(elements[0]);
+  }
+  try {
+    let monResto = await api.menuData(code);
+    
     //pour chaque jours
     monResto.data.forEach(element => {
       let unJour = document.createElement('div');
@@ -98,6 +100,10 @@ let restoClickListener = async function (code) {
       });
       view.divRepas.append(unJour);
     });
+  }
+  catch (error) {
+    view.divRepas.append("Aucune information donnée par ce CROUS");
+  }
 };
 
 async function recherchResto() {
