@@ -178,6 +178,15 @@ a:hover {
 
 #section-resultats {
   grid-column: 1;
+  margin-top: 40px;
+}
+
+/* Titre de section (favoris, résultats...) */
+#section-favoris h2,
+#section-resultats > p {
+  margin-bottom: 16px;
+  font-size: 1.1em;
+  color: var(--text-secondary);
 }
 
 #bloc-gif-attente {
@@ -192,35 +201,182 @@ a:hover {
 }
 
 #bloc-resultats {
-  display: grid !important; /* On force au cas où un autre truc prend le dessus */
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
   margin-top: 20px;
   width: 100%;
 }
 
+/* Chaque item (région ou wrapper de CROUS) fait au minimum 160px et s'étire pour remplir la ligne */
+#bloc-resultats > * {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+
+/* Wrapper CROUS : flex colonne pour que p.res remplisse toute la hauteur */
+.res-wrapper {
+  position: relative;
+  flex: 1 1 160px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Les <a> des régions deviennent aussi des containers flex pour le même effet */
 #bloc-resultats a {
   text-decoration: none;
   color: inherit;
+  display: flex;
+  flex-direction: column;
 }
 
+/* La carte elle-même - même forme pour régions et CROUS */
 #bloc-resultats p.res {
   margin: 0;
-  height: 100%;
+  flex: 1; /* remplace height: 100% - s'étire pour remplir son parent flex */
+  min-height: 90px; /* hauteur minimale pour une forme cohérente */
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  border-left: none; 
-  border-top: 4px solid var(--accent-color); 
+  background: linear-gradient(145deg, var(--surface), rgba(255,255,255,0.02));
+  border: 1px solid rgba(211, 47, 47, 0.3);
+  border-radius: 12px;
+  padding: 25px;
   font-weight: bold;
-  background-color: var(--surface);
-  border-radius: 8px;
-  padding: 20px;
+  font-size: 1.1em;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
 }
 
 #bloc-resultats p.res:hover {
-  transform: translateY(-5px);
+  transform: translateY(-5px) scale(1.02);
+  border-color: var(--accent-color);
+  box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
+  background: linear-gradient(145deg, var(--surface-hover), rgba(211,47,47,0.05));
+}
+
+/* ============================================
+   MODALE MENU DU JOUR
+   ============================================ */
+
+/* Fond semi-transparent qui couvre toute la page */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  /* cachée par défaut */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* La carte centrale */
+.modal-contenu {
+  background: var(--background);
+  border: 1px solid rgba(211, 47, 47, 0.35);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 28px;
+  transform: scale(0.95);
+  transition: transform 0.25s ease;
+}
+
+.modal-overlay.active .modal-contenu {
+  transform: scale(1);
+}
+
+/* En-tête : titre + bouton fermer côte à côte */
+.modal-entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(211, 47, 47, 0.2);
+}
+
+.modal-entete h2 {
+  margin: 0;
+  font-size: 1.3em;
+  font-weight: 500;
+}
+
+/* Bouton ✕ */
+.modal-btn-fermer {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.3em;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  line-height: 1;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.modal-btn-fermer:hover {
+  background-color: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+/* Contenu du menu dans la modale */
+#modal-corps .repas_jour {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--surface-hover);
+}
+
+#modal-corps .repas_jour:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+/* Sur les cartes CROUS (dans un wrapper), on compense pour l'étoile en haut */
+.res-wrapper p.res {
+  padding-top: 36px;
+}
+
+/* Étoile positionnée en haut à droite de la carte */
+#bloc-resultats .btn-favoris {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: var(--accent-color);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 5px;
+  line-height: 0;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* L'icône devient blanche sur le fond rouge */
+#bloc-resultats .btn-favoris img {
+  filter: brightness(0) invert(1);
+  display: block;
+}
+
+#bloc-resultats .btn-favoris:hover {
+  background-color: var(--accent-color-hover);
+  transform: scale(1.15);
 }
 
 /* On vire la petite flèche "→" qui fait trop liste */
@@ -456,29 +612,7 @@ input:focus-visible {
   margin-left: 20px; 
 }
 
-#bloc-resultats p.res {
-  margin: 0;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  background: linear-gradient(145deg, var(--surface), rgba(255,255,255,0.02));
-  border: 1px solid rgba(211, 47, 47, 0.3);
-  border-radius: 12px;
-  padding: 25px;
-  font-weight: bold;
-  font-size: 1.1em;
-  transition: all 0.3s ease;
-  box-shadow: var(--shadow-sm);
-}
-
-#bloc-resultats p.res:hover {
-  transform: translateY(-5px) scale(1.02);
-  border-color: var(--accent-color);
-  box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
-  background: linear-gradient(145deg, var(--surface-hover), rgba(211,47,47,0.05));
-}
+/* (styles des cartes définis plus haut dans SECTION RÉSULTATS) */
 
 
 h3{
@@ -487,4 +621,30 @@ h3{
 
 h3 *{
   color: var(--text-primary);
+}
+
+/* ============================================
+   RESPONSIVE MOBILE
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Le bloc de recherche passe en colonne sur mobile pour éviter les débordements */
+  #bloc-recherche {
+    flex-wrap: wrap;
+  }
+
+  #bloc-recherche > input[type="text"] {
+    flex: 1 1 100%;
+  }
+
+  /* La section favoris n'est plus sticky sur mobile - ça bouffait tout l'écran */
+  #section-favoris {
+    position: static;
+  }
+
+  /* Sur mobile, 2 colonnes max pour éviter les cartes trop petites */
+  #bloc-resultats > * {
+    flex: 1 1 calc(50% - 10px);
+    max-width: calc(50% - 10px);
+  }
 }

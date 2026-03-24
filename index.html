@@ -14,86 +14,27 @@
       <div class="hero-content">
         <h1>CROUS</h1>
         <p>Trouvez les meilleurs restaurants universitaires près de vous</p>
-        
-        <div id="bloc-recherche">
-          <p>regardez votre CROUS favoris</p>
-          <!-- <input id="recherche" type="text" placeholder="Ex: grenoble, lyon, paris..." />
-        
-          <button id="btn-lancer-recherche" type="button" class="btn_clicable" title="Lancer la recherche">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.35-4.35"></path>
-            </svg>
-          </button> -->
-        
-          <div class="favoris-dropdown">
-            <button id="btn-toggle-favoris" class="toggle-btn" aria-expanded="false">
-              <span class="toggle-icon">▼</span>
-              <span class="toggle-label">Mes favoris</span>
-            </button>
-        
-            <div id="favoris-content" class="favoris-content">
-              <ul id="liste-favoris">
-                <!--<li id="no_favoris">Pas encore de favoris enregistrés</li>-->
-              </ul>
-              <!--<p class="info-vide">(Aucun favori)</p>-->
-            </div>
-          </div>
-        </div>
-        <div id="repas_favoris"></div>
       </div>
     </header>
 
     <!-- MAIN CONTENT -->
     <main id="conteneur">
-      <p>ou cliquez sur votre région universitaire</p>
-      <!-- SECTION RÉSULTATS -->
+
+      <!-- Favoris affichés directement, sans slider -->
+      <section id="section-favoris">
+        <h2>Mes favoris</h2>
+        <ul id="liste-favoris"></ul>
+      </section>
+
+      <!-- Toutes les régions universitaires -->
       <section id="section-resultats">
+        <p>Cliquez sur votre région universitaire :</p>
         <div id="bloc-gif-attente">
           <img src="images/attente-ajax.gif" alt="Chargement" width="50" />
         </div>
-
-        <div id="bloc-resultats">
-        </div>
+        <div id="bloc-resultats"></div>
       </section>
-    
 
-    <!-- Section des recherches favorites -->
-      <section id="section-favoris">
-        <h2>Recherches favorites</h2>
-        <p>
-          Cliquer sur une recherche favorite ci-dessus pour relancer celle-ci :
-        </p>
-        <ul id="liste-favoris">
-          <li>
-            <span title="Cliquer pour relancer la recherche">Grenoble</span>
-            <img
-              src="images/croix.svg"
-              alt="Icone pour supprimer le favori"
-              width="15"
-              title="Cliquer pour supprimer le favori"
-            />
-          </li>
-          <li>
-            <span title="Cliquer pour relancer la recherche">Lyon</span>
-            <img
-              src="images/croix.svg"
-              alt="Icone pour supprimer le favori"
-              width="15"
-              title="Cliquer pour supprimer le favori"
-            />
-          </li>
-          <li>
-            <span title="Cliquer pour relancer la recherhe.">Web</span>
-            <img
-              src="images/croix.svg"
-              alt="Icone pour supprimer le favori"
-              width="15"
-              title="Cliquer pour supprimer le favori"
-            />
-          </li>
-        </ul>
-      </section>
     </main>
 
     <!-- FOOTER -->
@@ -104,6 +45,17 @@
         <p class="footer-secondary">Informations sur les restaurants universitaires du CROUS en France et en Outre-Mer</p>
       </div>
     </footer>
+
+    <!-- Même modale que liste_restaurants.html pour afficher le menu d'un favori -->
+    <div id="modal-menu" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-titre" aria-hidden="true">
+      <div class="modal-contenu">
+        <div class="modal-entete">
+          <h2 id="modal-titre">Menu du jour</h2>
+          <button id="modal-fermer" class="modal-btn-fermer" aria-label="Fermer la modale">✕</button>
+        </div>
+        <div id="modal-corps"></div>
+      </div>
+    </div>
 
     <script type="module" src="./js/appel_region.js"></script>
   </body>

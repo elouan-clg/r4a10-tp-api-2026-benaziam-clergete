@@ -1,9 +1,12 @@
 
-//appel l'Api pour recevoir toutes les régions
+/**
+ * Appelle l'API pour récupérer toutes les régions disponibles
+ * @returns {Promise<Object>} La réponse JSON avec la liste des régions
+ */
 export function allRegion() {
     return fetch('https://api.croustillant.menu/v1/regions')
     .then((resp) => {
-        if (!resp.ok) {throw new Error('Erreur HTTP : ' + resp.status); }
+        if (!resp.ok) { throw new Error('Erreur HTTP : ' + resp.status); }
         return resp.json();
     })
     .catch((err) => {
@@ -12,98 +15,114 @@ export function allRegion() {
     });
 }
 
-//appel l'Api pour recevoir tous les restaurants CROUS de la région demandée
-export async function allRestoFromRegion(regionId) {  
+/**
+ * Appelle l'API pour récupérer tous les restaurants CROUS d'une région
+ * @param {string} regionId - L'identifiant de la région
+ * @returns {Promise<Array>} La liste des restaurants de la région
+ */
+export async function allRestoFromRegion(regionId) {
     let resp = await fetch(`https://api.croustillant.menu/v1/regions/${regionId}/restaurants`);
     if (!resp.ok) {
-        throw new Error('Erreur HTTP : ' + resp.status); 
+        throw new Error('Erreur HTTP : ' + resp.status);
     }
     let json = await resp.json();
     return json.data;
 }
 
-
-//appel l'Api pour recevoir les info du menu du restaurant choisis
-export function menuData(code) { 
-    //console.log(code);
-    
+/**
+ * Appelle l'API pour récupérer le menu du restaurant choisi
+ * @param {string|number} code - Le code du restaurant
+ * @returns {Promise<Object|null>} Les données du menu, ou null si pas de menu publié (404)
+ */
+export function menuData(code) {
     let mr = fetch(`https://api.croustillant.menu/v1/restaurants/${code}/menu`)
     .then((resp) => {
-        if (!resp.ok) {throw new Error('Erreur HTTP : ' + resp.status); }
+        // 404 = ce CROUS n'a simplement pas publié son menu, c'est pas un bug
+        if (resp.status === 404) return null;
+        if (!resp.ok) { throw new Error('Erreur HTTP : ' + resp.status); }
         return resp.json();
     })
     .catch((err) => {
         console.error(err);
         throw err;
     });
-    //console.log(mr);
     return mr;
 }
 
-//appel l'Api pour recevoir les info du restaurant choisis
-export function restoData(code) { 
-    //console.log(code);
-    
+/**
+ * Appelle l'API pour récupérer les infos d'un restaurant
+ * @param {string|number} code - Le code du restaurant
+ * @returns {Promise<Object>} Les données du restaurant
+ */
+export function restoData(code) {
     let mr = fetch(`https://api.croustillant.menu/v1/restaurants/${code}`)
     .then((resp) => {
-        if (!resp.ok) {throw new Error('Erreur HTTP : ' + resp.status); }
+        if (!resp.ok) { throw new Error('Erreur HTTP : ' + resp.status); }
         return resp.json();
     })
     .catch((err) => {
         console.error(err);
         throw err;
     });
-    //console.log(mr);
     return mr;
 }
 
-//permet de faire un booléen convenable pour savoir si l'objet existe déjà
+/**
+ * Compare deux objets restaurant pour savoir s'ils sont identiques
+ * @param {Object} resto1
+ * @param {Object} resto2
+ * @returns {boolean} true si les deux restos ont le même nom et le même code
+ */
 function compareResto(resto1, resto2) {
-    try{    
+    try {
         return resto1["nom"] == resto2["nom"] && resto1["code"] == resto2["code"];
     } catch (error) {
-        //il y a eu un problème quelque part, c'est pas identique
-        return false
+        // il y a eu un problème quelque part, c'est pas identique
+        return false;
     }
 }
 
-//sauvegarde d'un restaurant en favoris
-//forme [{"nom":"RU1","code":1}, {"nom":"cafet","code":2}] ou [] si aucun favoris
-export function saveStateToClient(nom, code){
+/**
+ * Sauvegarde ou retire un restaurant des favoris dans le localStorage
+ * Forme stockée : [{"nom":"RU1","code":1}, {"nom":"cafet","code":2}] ou [] si aucun favori
+ * @param {string} nom - Le nom du restaurant
+ * @param {string|number} code - Le code du restaurant
+ */
+export function saveStateToClient(nom, code) {
     let RestoKV = {nom, code};
     let listeResto = localStorage.getItem(`pref`);
     let listeKVResto = JSON.parse(listeResto) ?? [];
-    //si le resto n'est pas en favoris, on l'ajoute
-    let i =0;
+
+    // si le resto n'est pas en favoris, on l'ajoute
+    let i = 0;
     let dejaPresent = false;
-    while (i < listeKVResto.length && !dejaPresent ) {
-        dejaPresent = compareResto(listeKVResto[i],RestoKV);
-        i++;            
+    while (i < listeKVResto.length && !dejaPresent) {
+        dejaPresent = compareResto(listeKVResto[i], RestoKV);
+        i++;
     }
-    
+
     if (i == listeKVResto.length && !dejaPresent) {
-        //console.log("on ajoute");
-        listeKVResto.push(RestoKV)
+        listeKVResto.push(RestoKV);
     }
-    //sinon on l'enlève
-    else{
-        //console.log("on enlève");
-        listeKVResto.pop(RestoKV)
+    // sinon on l'enlève
+    else {
+        listeKVResto.pop(RestoKV);
     }
-    if(listeKVResto.length > 0){
+
+    if (listeKVResto.length > 0) {
         localStorage.setItem("pref", JSON.stringify(listeKVResto));
-    }
-    else{
+    } else {
         localStorage.setItem("pref", JSON.stringify(null));
     }
-    
 }
 
-// renvoie la liste des restorants mis en favoris
-export function retrieveStateFromClient(){
-
-let chaineJSON = localStorage.getItem("pref");
-    if(chaineJSON){
+/**
+ * Récupère la liste des restaurants mis en favoris depuis le localStorage
+ * @returns {Array|false} La liste des favoris, ou false si elle est vide
+ */
+export function retrieveStateFromClient() {
+    let chaineJSON = localStorage.getItem("pref");
+    if (chaineJSON) {
         return JSON.parse(chaineJSON);
     }
     return false;

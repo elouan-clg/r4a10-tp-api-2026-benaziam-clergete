@@ -1,13 +1,15 @@
 import { view } from './vue.js';
-//import { afficherResto } from './main.js';
 import * as api from "./api.js";
 
-//s'occupe d'afficher les régions
+/**
+ * Affiche les régions CROUS disponibles dans le bloc résultats
+ * @param {Array} data - Tableau d'objets région avec {code, libelle}
+ */
 function afficherRegions(data) {
-    // Tri par ordre alphabétique
+    // tri par ordre alphabétique
     data.sort((a, b) => a.libelle.localeCompare(b.libelle));
 
-    // Construire tout le HTML d'un coup
+    // construit tout le HTML d'un coup puis injecte une seule fois
     let html = '';
     data.forEach(element => {
         html += `
@@ -17,11 +19,12 @@ function afficherRegions(data) {
         `;
     });
 
-    // Injecter une seule fois
     view.divResult.innerHTML = html;
 }
 
-//cherche dans l'API toutes les régions possibles
+/**
+ * Récupère et affiche toutes les régions disponibles via l'API
+ */
 async function appelRegion() {
     try {
         let mesRegions = await api.allRegion();
@@ -31,84 +34,123 @@ async function appelRegion() {
     }
 }
 
-//roulette de favoris
-document.addEventListener('DOMContentLoaded', function() {
-  const toggleBtn = document.getElementById('btn-toggle-favoris');
-  const favorisContent = document.getElementById('favoris-content');
+/**
+ * Ouvre la modale avec le nom du restaurant dans le titre
+ * @param {string} nomResto - Le nom du restaurant
+ */
+function ouvrirModal(nomResto) {
+    document.activeElement.blur();
+    let modal = document.getElementById('modal-menu');
+    document.getElementById('modal-titre').textContent = nomResto;
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden'; // bloque le scroll de la page
+    document.getElementById('modal-fermer').focus();
+}
 
-  if (toggleBtn && favorisContent) {
-    toggleBtn.addEventListener('click', function() {
-      const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
-      toggleBtn.setAttribute('aria-expanded', !isExpanded);
-      favorisContent.classList.toggle('open');
-    });
-  }
-});
+/**
+ * Ferme la modale et vide son contenu
+ */
+function fermerModal() {
+    document.activeElement.blur();
+    let modal = document.getElementById('modal-menu');
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = ''; // rétablit le scroll
+    document.getElementById('modal-corps').innerHTML = '';
+}
 
+/**
+ * Charge et affiche le menu d'un favori dans la modale
+ * @param {string|number} code - Le code du restaurant
+ * @param {string} nom - Le nom du restaurant
+ */
+let restoClickListener = async function (code, nom) {
+    ouvrirModal(nom);
+    let corps = document.getElementById('modal-corps');
 
-//affiche le menu du favoris(plus commenté dans main, c'est une version raccourcis(pas mettre en fav))
-//optimisable
-let restoClickListener = async function (code) {   
-    const elements = document.getElementsByClassName('repas_favoris');
-        while(elements.length > 0){
-        elements[0].parentNode.removeChild(elements[0]);
-    }  
-    try{
-        let monResto = await api.menuData(code);  
-        
-        //pour chaque jours
+    try {
+        let monResto = await api.menuData(code);
+
+        // null = pas de menu publié pour ce CROUS
+        if (!monResto) {
+            let info = document.createElement('p');
+            info.textContent = "Ce CROUS n'a pas encore publié son menu.";
+            corps.append(info);
+            return;
+        }
+
+        // pour chaque jour
         monResto.data.forEach(element => {
             let unJour = document.createElement('div');
             unJour.append(element.date);
-            unJour.classList.add('repas_favoris');
-            
-            // on check si y a bien un repas prevu
+            unJour.classList.add('repas_jour');
+
+            // on check si y a bien un repas prévu
             if (element.repas && element.repas.length > 0 && element.repas[0].categories) {
-                //pour chaque jours
                 element.repas[0].categories.forEach(typePlat => {
-                    //lui mettre un sous titre puis lui donner la liste de commestibles
                     let soustitre = document.createElement('h3');
                     soustitre.append(typePlat.libelle);
-                    //pour chaqueligne
                     typePlat.plats.forEach(lignePlat => {
-                        //mettre le nom dans un p
                         let platLigne = document.createElement('p');
                         platLigne.append(lignePlat.libelle);
                         soustitre.append(platLigne);
                     });
                     unJour.append(soustitre);
-                }); 
+                });
             } else {
                 let msgVide = document.createElement('p');
                 msgVide.append("Pas de menu pour ce jour");
                 unJour.append(msgVide);
             }
-                   
-            view.divFavRepas.append(unJour);
+
+            corps.append(unJour);
         });
-    }catch (error) {
+    } catch (error) {
         let info = document.createElement('p');
-        info.classList.add('repas_favoris');
-        info.append("Aucune information donnée par ce CROUS");
-        view.divFavRepas.append(info);
+        info.textContent = "Impossible de récupérer le menu de ce CROUS.";
+        corps.append(info);
     }
 };
 
-//parcours la liste des favoris, si existe, du locale storage
+/**
+ * Récupère les favoris du localStorage et les affiche dans la liste,
+ * avec un bouton pour supprimer chaque entrée
+ */
 async function appelFavoris() {
     let listeFavoris = await api.retrieveStateFromClient();
-    
+
     // on check si la liste existe ET n'est pas vide
-    if (listeFavoris && listeFavoris.length > 0) {        
+    if (listeFavoris && listeFavoris.length > 0) {
         listeFavoris.forEach(element => {
             let resto = document.createElement('li');
-            resto.append(element["nom"]);         
-            resto.addEventListener("click", () => {                
-                restoClickListener(element["code"]);
+
+            // span cliquable pour afficher le menu dans la modale
+            let nom = document.createElement('span');
+            nom.append(element["nom"]);
+            nom.title = "Cliquer pour afficher le menu";
+            nom.addEventListener("click", () => {
+                restoClickListener(element["code"], element["nom"]);
             });
-            view.divFav.append(resto)
+            resto.append(nom);
+
+            // bouton croix pour supprimer le favori
+            let btnSuppr = document.createElement('button');
+            btnSuppr.classList.add('btn-supprimer-favori');
+            btnSuppr.title = "Supprimer ce favori";
+            btnSuppr.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`;
+            btnSuppr.addEventListener("click", () => {
+                // on demande confirmation avant de supprimer
+                if (confirm(`Voulez-vous vraiment supprimer "${element.nom}" de vos favoris ?`)) {
+                    api.saveStateToClient(element.nom, element.code);
+                    resto.remove();
+                }
+            });
+            resto.append(btnSuppr);
+
+            view.divFav.append(resto);
         });
-    } else{
+    } else {
         let pasFav = document.createElement('li');
         pasFav.id = "no_favoris";
         pasFav.append("Pas encore de favoris enregistrés");
@@ -116,8 +158,21 @@ async function appelFavoris() {
     }
 }
 
-//appel les favoris
+// fermeture modale via le bouton ✕
+document.getElementById('modal-fermer').addEventListener('click', fermerModal);
+
+// fermeture en cliquant sur le fond
+document.getElementById('modal-menu').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) fermerModal();
+});
+
+// fermeture avec Échap
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') fermerModal();
+});
+
+// appel les favoris
 appelFavoris();
 
-//appel toutes les région
+// appel toutes les régions
 appelRegion();

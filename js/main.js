@@ -1,86 +1,135 @@
 import { view } from './vue.js';
 import * as api from "./api.js";
-//import { afficher } from './appel_region.js';
 
+/**
+ * Vérifie si un restaurant est déjà dans les favoris
+ * @param {string} code - Le code du restaurant à vérifier
+ * @returns {boolean} true si le restaurant est en favoris
+ */
+function estEnFavoris(code) {
+    let liste = api.retrieveStateFromClient();
+    if (!liste) return false;
+    return liste.some(r => r.code == code);
+}
+
+/**
+ * Affiche la liste des restaurants CROUS dans le bloc résultats
+ * @param {Array} data - Tableau d'objets {nom, code}
+ */
 export function afficherResto(data) {
     let div = view.divResult;
 
-    //vide l'affichage
-    //viderClass('res');
+    // vide l'affichage précédent (les wrappers contenant nom + étoile)
+    const wrappers = document.getElementsByClassName('res-wrapper');
+    while(wrappers.length > 0){
+        wrappers[0].parentNode.removeChild(wrappers[0]);
+    }
+    // vide aussi les p.res orphelins qui pourraient traîner (ex: les placeholders HTML)
     const elements = document.getElementsByClassName('res');
     while(elements.length > 0){
         elements[0].parentNode.removeChild(elements[0]);
     }
-    //3eme bocle non optimisé: boucle pour vider les favoris existants
-    //viderClass('btn-favoris)');
-    const favsAuRevoirs = document.getElementsByClassName('btn-favoris');
-    while(favsAuRevoirs.length > 0){
-        favsAuRevoirs[0].parentNode.removeChild(favsAuRevoirs[0]);
-    }
 
-    //affiche les resto potentiels
+    // affiche chaque restaurant avec son bouton étoile
     data.forEach(element => {
+      // wrapper = une seule cellule dans la grille (nom + bouton étoile ensemble)
+      let wrapper = document.createElement('div');
+      wrapper.classList.add('res-wrapper');
+
       let eleCont = document.createElement('p');
       eleCont.append(element.nom);
       eleCont.classList.add('res');
       eleCont.id = element.code;
+      // passe aussi le nom pour l'afficher dans le titre de la modale
       eleCont.addEventListener("click", () => {
-          restoClickListener(element.code);
+          restoClickListener(element.code, element.nom);
       });
-      div.append(eleCont);
 
-      //permet de le mettre en favoris
+      // bouton étoile - pleine si déjà en favoris, vide sinon
       let boutonFav = document.createElement('button');
-      boutonFav.classList.add(`btn-favoris`);// ${element.nom}, ${element.code}`);
-      boutonFav.type="button";
-      boutonFav.title="Ajouter la recherche aux favoris";
-      //mets la petite étoile dans le bouton
-      let etoile = document.createElement('img');
-      etoile.src="images/etoile-vide.svg";
-      etoile.alt="Liste Favoris";
-      etoile.width="22";
-      boutonFav.append(etoile);
-      boutonFav.addEventListener("click", () => {
-        try {api.saveStateToClient(element.nom, element.code);}
-        catch (err) {console.error(err);}
-      });
-      div.append(boutonFav);
-    });
+      boutonFav.classList.add('btn-favoris');
+      boutonFav.type = "button";
+      boutonFav.title = "Ajouter la recherche aux favoris";
 
+      let etoile = document.createElement('img');
+      etoile.src = estEnFavoris(element.code) ? "images/etoile-pleine.svg" : "images/etoile-vide.svg";
+      etoile.alt = "Favori";
+      etoile.width = "22";
+      boutonFav.append(etoile);
+
+      boutonFav.addEventListener("click", () => {
+        try {
+            api.saveStateToClient(element.nom, element.code);
+            // met à jour l'icône selon le nouvel état (sans confirmation)
+            etoile.src = estEnFavoris(element.code) ? "images/etoile-pleine.svg" : "images/etoile-vide.svg";
+        }
+        catch (err) { console.error(err); }
+      });
+
+      // on regroupe le nom et l'étoile dans le même bloc avant d'insérer
+      wrapper.append(eleCont);
+      wrapper.append(boutonFav);
+      div.append(wrapper);
+    });
 }
 
-//mets à jour le menu quand on clique sur un restaurant CROUS
-let restoClickListener = async function (code) {  
-  const elements = document.getElementsByClassName('repas_jour');
-  while(elements.length > 0){
-    elements[0].parentNode.removeChild(elements[0]);
-  }
+/**
+ * Ouvre la modale et met le nom du restaurant dans le titre
+ * @param {string} nomResto - Le nom du restaurant sélectionné
+ */
+function ouvrirModal(nomResto) {
+    let modal = document.getElementById('modal-menu');
+    document.getElementById('modal-titre').textContent = nomResto;
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden'; // bloque le scroll de la page
+    document.getElementById('modal-fermer').focus();
+}
+
+/**
+ * Ferme la modale et vide son contenu pour le prochain restaurant
+ */
+function fermerModal() {
+    document.activeElement.blur();
+    let modal = document.getElementById('modal-menu');
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = ''; // rétablit le scroll
+    document.getElementById('modal-corps').innerHTML = '';
+}
+
+/**
+ * Charge et affiche le menu du jour dans la modale
+ * @param {string|number} code - Le code du restaurant
+ * @param {string} nom - Le nom du restaurant (pour le titre de la modale)
+ */
+let restoClickListener = async function (code, nom) {
+  ouvrirModal(nom);
+  let corps = document.getElementById('modal-corps');
+
   try {
     let monResto = await api.menuData(code);
-    
-    //pour chaque jours
+
+    // null = pas de menu publié pour ce CROUS (404), on l'indique sans console.error
+    if (!monResto) {
+      let info = document.createElement('p');
+      info.textContent = "Ce CROUS n'a pas encore publié son menu.";
+      corps.append(info);
+      return;
+    }
+
+    // pour chaque jour du menu
     monResto.data.forEach(element => {
       let unJour = document.createElement('div');
       unJour.append(element.date);
       unJour.classList.add('repas_jour');
 
-      // console.log(element.repas[0]);
-      // console.log(element.repas[0].categories[0]);
-      // console.log(element.repas[0].categories[0].libelle);
-      // console.log(element.repas[0].categories[0].plats);
-      // console.log(element.repas[0].categories[0].plats[0].libelle);
-      //pour *aider*(pas résoudre) à comprendre ces if dans ces if: décommenter les lignes du dessus
-
       // on check si y a bien un repas prevu et si les categories existent
       if (element.repas && element.repas.length > 0 && element.repas[0].categories) {
-          //pour chaque jours
           element.repas[0].categories.forEach(typePlat => {
-              //lui mettre un sous titre puis lui donner la liste de commestibles
               let soustitre = document.createElement('h3');
               soustitre.append(typePlat.libelle);
-              //pour chaqueligne
               typePlat.plats.forEach(lignePlat => {
-                //mettre le nom dans un p
                 let platLigne = document.createElement('p');
                 platLigne.append(lignePlat.libelle);
                 soustitre.append(platLigne);
@@ -92,47 +141,81 @@ let restoClickListener = async function (code) {
           msgVide.append("Pas de menu pour ce jour");
           unJour.append(msgVide);
       }
-      
-      view.divRepas.append(unJour);
+
+      corps.append(unJour);
     });
   }
   catch (error) {
+    // l'API n'a pas de menu pour ce resto (404 ou autre), on le signale
     let info = document.createElement('p');
     info.classList.add('repas_jour');
-    info.append("Aucune information donnée par ce CROUS");
-    view.divRepas.append(info);
+    info.append("Aucune information disponible pour ce CROUS");
+    corps.append(info);
   }
 };
 
 let tousLesRestos = []; // on garde tout en mémoire pour éviter de spam l'API
 
+/**
+ * Initialise la page en chargeant les restaurants de la région passée dans l'URL
+ */
 async function initPage() {
     let idRegion = new URLSearchParams(window.location.search).get("region");
     if (!idRegion) return;
+
+    // affiche le gif pendant que l'API cherche les données
+    view.gifAttente.classList.add('visible');
 
     try {
         tousLesRestos = await api.allRestoFromRegion(idRegion);
         afficherResto(tousLesRestos);
     } catch(err) {
         console.error(err);
+    } finally {
+        // cache le gif quoi qu'il arrive une fois que c'est terminé
+        view.gifAttente.classList.remove('visible');
     }
 }
 
+/**
+ * Filtre les restaurants affichés selon la valeur du champ de recherche
+ */
 function filtrerRestos() {
     let texte = view.reserachInput.value.toLowerCase();
-    
-    let resultats = tousLesRestos.filter(resto => 
+
+    let resultats = tousLesRestos.filter(resto =>
         resto.nom.toLowerCase().includes(texte)
     );
-    
+
     afficherResto(resultats);
 }
 
-// mets à jour les recherches quand on clique ou qu'on tape
-view.reserachBtn.addEventListener("click", filtrerRestos);
-view.reserachInput.addEventListener("input", filtrerRestos);
+// active/désactive le bouton loupe selon si le champ est vide ou non
+view.reserachInput.addEventListener("input", () => {
+    view.reserachBtn.disabled = view.reserachInput.value.trim() === '';
+    filtrerRestos();
+});
 
-// vide l'affichage précédent
+// lance aussi la recherche si on clique sur le bouton
+view.reserachBtn.addEventListener("click", filtrerRestos);
+
+// fermeture via le bouton ✕
+document.getElementById('modal-fermer').addEventListener('click', fermerModal);
+
+// fermeture en cliquant sur le fond de la modale (pas sur la carte elle-même)
+document.getElementById('modal-menu').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) fermerModal();
+});
+
+// fermeture avec la touche Échap
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') fermerModal();
+});
+
+/**
+ * Supprime tous les éléments d'une classe donnée du DOM
+ * @param {string} nomChamp - Le nom de la classe CSS à vider
+ */
 function viderClass(nomChamp) {
     const elements = document.getElementsByClassName(nomChamp);
     while(elements.length > 0){

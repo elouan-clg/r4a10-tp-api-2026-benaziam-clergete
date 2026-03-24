@@ -1,61 +1,46 @@
 <!DOCTYPE html>
 <html lang="fr" dir="ltr">
   <head>
-    <title>Recherche d'offres d'emploi</title>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CROUS - Restaurants universitaires</title>
     <link rel="shortcut icon" type="image/x-icon" href="favicon-js.ico" />
     <link rel="stylesheet" href="styles.css" />
   </head>
 
   <body>
-    <header>
-      <h1>Recherche de CROUS</h1>
+    <!-- HERO SECTION - même structure que index.html pour la cohérence visuelle -->
+    <header id="hero">
+      <div class="hero-content">
+        <h1>CROUS</h1>
+        <p>Recherche du menu de votre restaurant universitaire</p>
 
-      <p id="explication">
-        Cette page permet de rechercher desle menu de votre CROUS via l'API publique
-        de <a href="https://croustillant.menu/fr" target="_blank">CROUStillant.menu/fr</a>.<br />
-        Saisisez votre CROUS et admirez!
-      </p>
-    </header>
-    <hr />
-
-    <main id="conteneur">
-      <!-- Section de recherche (avec résultats) -->
-      <section id="section-recherche">
         <div id="bloc-recherche">
           <!-- Champ de recherche -->
-          <input id="recherche" type="text" placeholder="Que cherchez-vous ?" />
+          <input id="recherche" type="text" placeholder="Ex: grenoble, lyon, paris..." />
 
-          <!-- Boutons -->
+          <!-- Bouton loupe - désactivé si le champ est vide -->
           <button
             id="btn-lancer-recherche"
             type="button"
             class="btn_clicable"
             title="Lancer la recherche"
+            disabled
           >
-            <!-- Icone Loupe (provenant de flaticon.com) -->
-            <img src="images/loupe.svg" alt="Loupe pour recherche" width="22" />
-          </button>
-
-          <button
-            class="btn-favoris"
-            type="button"
-            ensabled
-            title="Ajouter la recherche aux favoris"
-          >
-            <!-- Icone étoile vide
-							(qui indique que la recherche ne fait pas partie des favoris) -->
-            <img src="images/etoile-vide.svg" alt="Etoile vide" width="22" />
-
-            <!-- Icone étoile pleine
-								(qui indique que la recherche fait partie des favoris) -->
-            <!-- <img src="images/etoile-pleine.svg" alt="Etoile pleine" width="22" > -->
-
-            <!-- (Les 2 icones d'étoile provenant de flaticon.com) -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
           </button>
         </div>
+      </div>
+    </header>
 
-        <!-- Résultats de recherche -->
+    <!-- MAIN CONTENT -->
+    <main id="conteneur">
+      <!-- Section de recherche (avec résultats) -->
+      <section id="section-recherche">
+        <!-- GIF d'attente pendant le chargement de l'API -->
         <div id="bloc-gif-attente">
           <img
             src="images/attente-ajax.gif"
@@ -65,58 +50,33 @@
         </div>
         <div id="bloc-resultats">
           <p class="res">Rentrez votre CROUS dans la barre de recherche</p>
-          <p class="res">Les résultats s'afficheronts ici</p>
-          <!-- <p class="info-vide">(Aucun résultat trouvé)</p> -->
+          <p class="res">Les résultats s'afficheront ici</p>
         </div>
       </section>
-      <!-- à cache tant qu'on a pas un resto de séléctioné -->
-      <section id="menu" class="cache">
-        <h2>Menu du jour</h2>
-        <div id="repas"></div>
-        <p class="eleRepas"></p>
-      </section>
 
-      <!-- Section de séparation (avec la bordure verte) -->
-      <section id="section-separation"></section>
-
-      <!-- Section des recherches favorites -->
-      <section id="section-favoris">
-        <h2>Recherches favorites</h2>
-        <p>
-          Cliquer sur une recherche favorite ci-dessus pour relancer celle-ci :
-        </p>
-        <ul id="liste-favoris">
-          <li>
-            <span title="Cliquer pour relancer la recherche">Grenoble</span>
-            <img
-              src="images/croix.svg"
-              alt="Icone pour supprimer le favori"
-              width="15"
-              title="Cliquer pour supprimer le favori"
-            />
-          </li>
-          <li>
-            <span title="Cliquer pour relancer la recherche">Lyon</span>
-            <img
-              src="images/croix.svg"
-              alt="Icone pour supprimer le favori"
-              width="15"
-              title="Cliquer pour supprimer le favori"
-            />
-          </li>
-          <li>
-            <span title="Cliquer pour relancer la recherhe.">Web</span>
-            <img
-              src="images/croix.svg"
-              alt="Icone pour supprimer le favori"
-              width="15"
-              title="Cliquer pour supprimer le favori"
-            />
-          </li>
-        </ul>
-        <p class="info-vide">(Aucune recherche favorite)</p>
-      </section>
     </main>
+
+    <!-- FOOTER -->
+    <footer id="footer">
+      <div class="footer-content">
+        <p>Données alimentées par <a href="https://croustillant.bayfield.dev/fr" target="_blank" rel="noopener noreferrer">CROUStillant</a></p>
+        <p>Un projet open-source créé par <a href="https://github.com/CROUStillant-Developpement" target="_blank" rel="noopener noreferrer">Paul Bayfield</a></p>
+        <p class="footer-secondary">Informations sur les restaurants universitaires du CROUS en France et en Outre-Mer</p>
+      </div>
+    </footer>
+
+    <!-- Modale menu du jour - cachée par défaut, ouverte au clic sur un CROUS -->
+    <div id="modal-menu" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-titre" aria-hidden="true">
+      <div class="modal-contenu">
+        <div class="modal-entete">
+          <h2 id="modal-titre">Menu du jour</h2>
+          <button id="modal-fermer" class="modal-btn-fermer" aria-label="Fermer la modale">✕</button>
+        </div>
+        <!-- Le menu sera injecté ici par le JS -->
+        <div id="modal-corps"></div>
+      </div>
+    </div>
+
+    <script type="module" src="./js/main.js"></script>
   </body>
-  <script type="module" src="./js/main.js"></script>
 </html>
