@@ -37,7 +37,7 @@ export async function allRestoFromRegion(regionId) {
 export function menuData(code) {
     let mr = fetch(`https://api.croustillant.menu/v1/restaurants/${code}/menu`)
     .then((resp) => {
-        // 404 = ce CROUS n'a simplement pas publié son menu, c'est pas un bug
+        // 404 = ce CROUS n'a simplement pas publié son menu
         if (resp.status === 404) return null;
         if (!resp.ok) { throw new Error('Erreur HTTP : ' + resp.status); }
         return resp.json();
