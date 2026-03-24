@@ -10,9 +10,6 @@ export const view = {
   // bouton de validation de recherche
   reserachBtn: document.getElementById("btn-lancer-recherche"),
 
-  // affichage des repas dans liste_restaurant
-  divRepas: document.getElementById("repas"),
-
   // barre de recherche
   reserachInput: document.getElementById("recherche"),
 
@@ -20,9 +17,6 @@ export const view = {
   gifAttente: document.getElementById("bloc-gif-attente"),
 
   //// INDEX ////
-
-  // affichage des repas dans index
-  divFavRepas: document.getElementById("repas_favoris"),
 
   divFav: document.getElementById("liste-favoris"),
 };

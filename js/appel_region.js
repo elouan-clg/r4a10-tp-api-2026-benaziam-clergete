@@ -9,7 +9,7 @@ function afficherRegions(data) {
     // tri par ordre alphabétique
     data.sort((a, b) => a.libelle.localeCompare(b.libelle));
 
-    // construit tout le HTML d'un coup puis injecte une seule fois
+    // construit et injecte d'un coup
     let html = '';
     data.forEach(element => {
         html += `

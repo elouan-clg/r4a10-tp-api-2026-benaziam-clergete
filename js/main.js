@@ -19,20 +19,29 @@ function estEnFavoris(code) {
 export function afficherResto(data) {
     let div = view.divResult;
 
-    // vide l'affichage précédent (les wrappers contenant nom + étoile)
+    // vide l'affichage
     const wrappers = document.getElementsByClassName('res-wrapper');
     while(wrappers.length > 0){
         wrappers[0].parentNode.removeChild(wrappers[0]);
     }
-    // vide aussi les p.res orphelins qui pourraient traîner (ex: les placeholders HTML)
+    // vide aussi les p.res qui traînent (placeholders HTML etc.)
     const elements = document.getElementsByClassName('res');
     while(elements.length > 0){
         elements[0].parentNode.removeChild(elements[0]);
     }
 
+    // si aucun résultat, on l'indique
+    if (data.length === 0) {
+        let msgVide = document.createElement('p');
+        msgVide.classList.add('info-vide');
+        msgVide.append("(Aucun résultat trouvé)");
+        div.append(msgVide);
+        return;
+    }
+
     // affiche chaque restaurant avec son bouton étoile
     data.forEach(element => {
-      // wrapper = une seule cellule dans la grille (nom + bouton étoile ensemble)
+      // wrapper = nom + étoile dans un seul bloc
       let wrapper = document.createElement('div');
       wrapper.classList.add('res-wrapper');
 
@@ -59,14 +68,16 @@ export function afficherResto(data) {
 
       boutonFav.addEventListener("click", () => {
         try {
+            // si déjà en favoris, on demande confirmation avant de retirer
+            if (estEnFavoris(element.code) && !confirm(`Voulez-vous vraiment retirer "${element.nom}" de vos favoris ?`)) return;
             api.saveStateToClient(element.nom, element.code);
-            // met à jour l'icône selon le nouvel état (sans confirmation)
+            // met à jour l'étoile
             etoile.src = estEnFavoris(element.code) ? "images/etoile-pleine.svg" : "images/etoile-vide.svg";
         }
         catch (err) { console.error(err); }
       });
 
-      // on regroupe le nom et l'étoile dans le même bloc avant d'insérer
+      // on regroupe avant d'insérer
       wrapper.append(eleCont);
       wrapper.append(boutonFav);
       div.append(wrapper);
@@ -110,7 +121,7 @@ let restoClickListener = async function (code, nom) {
   try {
     let monResto = await api.menuData(code);
 
-    // null = pas de menu publié pour ce CROUS (404), on l'indique sans console.error
+    // null = ce CROUS n'a pas publié son menu
     if (!monResto) {
       let info = document.createElement('p');
       info.textContent = "Ce CROUS n'a pas encore publié son menu.";
