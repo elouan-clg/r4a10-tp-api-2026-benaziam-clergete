@@ -29,6 +29,11 @@ export function afficherResto(data) {
     while(elements.length > 0){
         elements[0].parentNode.removeChild(elements[0]);
     }
+    // vide le message "aucun résultat" si présent
+    const msgsVides = document.getElementsByClassName('info-vide');
+    while(msgsVides.length > 0){
+        msgsVides[0].parentNode.removeChild(msgsVides[0]);
+    }
 
     // si aucun résultat, on l'indique
     if (data.length === 0) {
